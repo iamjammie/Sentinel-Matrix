@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+venv/
+
+# Node
+node_modules/
+
+# Agent local config / credentials (never commit)
+agent/config.yaml
+agent/creds.json
+*.creds.json
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Transient test artefacts
+dist/*.png
+dist/shot-*.png

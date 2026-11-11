@@ -1,0 +1,1 @@
+[{"id":1500,"identifier":"a1b2-kerb","name":"Potential Kerberoasting Activity","type":"EVENT","enabled":true,"origin":"USER","owner":"admin","notes":"Detects abnormal TGS requests","rule_tests":"when the event QID is one of 4769 and when the Ticket Encryption Type is 0x17","modification_date":1700000000000,"creation_date":1699000000000,"rule_groups":["Authentication","Threat"]}]

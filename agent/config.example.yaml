@@ -1,0 +1,13 @@
+# SENTINEL MATRIX audit agent configuration (example)
+# Copy to config.yaml and adjust. All values are optional.
+
+# Never expose the agent to the LAN unless you fully understand the risk.
+# When false (default), only localhost clients are accepted even if bound to 0.0.0.0.
+allow_remote: false
+
+# Optional path for a restricted-permission (0600) credential file, used ONLY when the
+# OS keyring (keyring package) is unavailable. Prefer the keyring; leave this unset to
+# keep tokens per-request (never written to disk).
+# cred_path: /etc/sentinel-matrix/creds.json
+
+# The agent is read-only by design. There is no option to enable write operations.

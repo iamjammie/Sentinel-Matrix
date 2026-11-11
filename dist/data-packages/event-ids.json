@@ -1,0 +1,858 @@
+{
+ "windows": [
+  {
+   "id": 4624,
+   "description": "An account was successfully logged on",
+   "category": "Logon",
+   "channel": "Security"
+  },
+  {
+   "id": 4625,
+   "description": "An account failed to log on",
+   "category": "Logon",
+   "channel": "Security"
+  },
+  {
+   "id": 4634,
+   "description": "An account was logged off",
+   "category": "Logon",
+   "channel": "Security"
+  },
+  {
+   "id": 4647,
+   "description": "User initiated logoff",
+   "category": "Logon",
+   "channel": "Security"
+  },
+  {
+   "id": 4648,
+   "description": "A logon was attempted using explicit credentials",
+   "category": "Logon",
+   "channel": "Security"
+  },
+  {
+   "id": 4672,
+   "description": "Special privileges assigned to new logon",
+   "category": "Logon",
+   "channel": "Security"
+  },
+  {
+   "id": 4768,
+   "description": "A Kerberos authentication ticket (TGT) was requested",
+   "category": "Kerberos",
+   "channel": "Security"
+  },
+  {
+   "id": 4769,
+   "description": "A Kerberos service ticket was requested",
+   "category": "Kerberos",
+   "channel": "Security"
+  },
+  {
+   "id": 4770,
+   "description": "A Kerberos service ticket was renewed",
+   "category": "Kerberos",
+   "channel": "Security"
+  },
+  {
+   "id": 4771,
+   "description": "Kerberos pre-authentication failed",
+   "category": "Kerberos",
+   "channel": "Security"
+  },
+  {
+   "id": 4776,
+   "description": "The computer attempted to validate the credentials for an account (NTLM)",
+   "category": "NTLM",
+   "channel": "Security"
+  },
+  {
+   "id": 4740,
+   "description": "A user account was locked out",
+   "category": "Account",
+   "channel": "Security"
+  },
+  {
+   "id": 4720,
+   "description": "A user account was created",
+   "category": "Account",
+   "channel": "Security"
+  },
+  {
+   "id": 4722,
+   "description": "A user account was enabled",
+   "category": "Account",
+   "channel": "Security"
+  },
+  {
+   "id": 4723,
+   "description": "An attempt was made to change an account's password",
+   "category": "Account",
+   "channel": "Security"
+  },
+  {
+   "id": 4724,
+   "description": "An attempt was made to reset an account's password",
+   "category": "Account",
+   "channel": "Security"
+  },
+  {
+   "id": 4725,
+   "description": "A user account was disabled",
+   "category": "Account",
+   "channel": "Security"
+  },
+  {
+   "id": 4726,
+   "description": "A user account was deleted",
+   "category": "Account",
+   "channel": "Security"
+  },
+  {
+   "id": 4738,
+   "description": "A user account was changed",
+   "category": "Account",
+   "channel": "Security"
+  },
+  {
+   "id": 4741,
+   "description": "A computer account was created",
+   "category": "Account",
+   "channel": "Security"
+  },
+  {
+   "id": 4742,
+   "description": "A computer account was changed",
+   "category": "Account",
+   "channel": "Security"
+  },
+  {
+   "id": 4767,
+   "description": "A user account was unlocked",
+   "category": "Account",
+   "channel": "Security"
+  },
+  {
+   "id": 4781,
+   "description": "The name of an account was changed",
+   "category": "Account",
+   "channel": "Security"
+  },
+  {
+   "id": 4728,
+   "description": "A member was added to a security-enabled global group",
+   "category": "Group",
+   "channel": "Security"
+  },
+  {
+   "id": 4729,
+   "description": "A member was removed from a security-enabled global group",
+   "category": "Group",
+   "channel": "Security"
+  },
+  {
+   "id": 4732,
+   "description": "A member was added to a security-enabled local group",
+   "category": "Group",
+   "channel": "Security"
+  },
+  {
+   "id": 4733,
+   "description": "A member was removed from a security-enabled local group",
+   "category": "Group",
+   "channel": "Security"
+  },
+  {
+   "id": 4756,
+   "description": "A member was added to a security-enabled universal group",
+   "category": "Group",
+   "channel": "Security"
+  },
+  {
+   "id": 4757,
+   "description": "A member was removed from a security-enabled universal group",
+   "category": "Group",
+   "channel": "Security"
+  },
+  {
+   "id": 4798,
+   "description": "A user's local group membership was enumerated",
+   "category": "Enumeration",
+   "channel": "Security"
+  },
+  {
+   "id": 4799,
+   "description": "A security-enabled local group membership was enumerated",
+   "category": "Enumeration",
+   "channel": "Security"
+  },
+  {
+   "id": 4661,
+   "description": "A handle to an object was requested (SAM)",
+   "category": "Object",
+   "channel": "Security"
+  },
+  {
+   "id": 4662,
+   "description": "An operation was performed on an object (AD)",
+   "category": "Object",
+   "channel": "Security"
+  },
+  {
+   "id": 4663,
+   "description": "An attempt was made to access an object",
+   "category": "Object",
+   "channel": "Security"
+  },
+  {
+   "id": 4656,
+   "description": "A handle to an object was requested",
+   "category": "Object",
+   "channel": "Security"
+  },
+  {
+   "id": 4660,
+   "description": "An object was deleted",
+   "category": "Object",
+   "channel": "Security"
+  },
+  {
+   "id": 4670,
+   "description": "Permissions on an object were changed",
+   "category": "Object",
+   "channel": "Security"
+  },
+  {
+   "id": 4657,
+   "description": "A registry value was modified",
+   "category": "Registry",
+   "channel": "Security"
+  },
+  {
+   "id": 4688,
+   "description": "A new process has been created",
+   "category": "Process",
+   "channel": "Security"
+  },
+  {
+   "id": 4689,
+   "description": "A process has exited",
+   "category": "Process",
+   "channel": "Security"
+  },
+  {
+   "id": 4697,
+   "description": "A service was installed in the system",
+   "category": "Service",
+   "channel": "Security"
+  },
+  {
+   "id": 4698,
+   "description": "A scheduled task was created",
+   "category": "Scheduled Task",
+   "channel": "Security"
+  },
+  {
+   "id": 4699,
+   "description": "A scheduled task was deleted",
+   "category": "Scheduled Task",
+   "channel": "Security"
+  },
+  {
+   "id": 4700,
+   "description": "A scheduled task was enabled",
+   "category": "Scheduled Task",
+   "channel": "Security"
+  },
+  {
+   "id": 4701,
+   "description": "A scheduled task was disabled",
+   "category": "Scheduled Task",
+   "channel": "Security"
+  },
+  {
+   "id": 4702,
+   "description": "A scheduled task was updated",
+   "category": "Scheduled Task",
+   "channel": "Security"
+  },
+  {
+   "id": 5136,
+   "description": "A directory service object was modified",
+   "category": "Directory",
+   "channel": "Security"
+  },
+  {
+   "id": 5137,
+   "description": "A directory service object was created",
+   "category": "Directory",
+   "channel": "Security"
+  },
+  {
+   "id": 5141,
+   "description": "A directory service object was deleted",
+   "category": "Directory",
+   "channel": "Security"
+  },
+  {
+   "id": 4780,
+   "description": "The ACL was set on accounts which are members of administrators groups",
+   "category": "Directory",
+   "channel": "Security"
+  },
+  {
+   "id": 4794,
+   "description": "An attempt was made to set the Directory Services Restore Mode password",
+   "category": "Directory",
+   "channel": "Security"
+  },
+  {
+   "id": 1102,
+   "description": "The audit log was cleared",
+   "category": "Audit",
+   "channel": "Security"
+  },
+  {
+   "id": 1100,
+   "description": "The event logging service has shut down",
+   "category": "Audit",
+   "channel": "Other"
+  },
+  {
+   "id": 4719,
+   "description": "System audit policy was changed",
+   "category": "Audit",
+   "channel": "Security"
+  },
+  {
+   "id": 4904,
+   "description": "An attempt was made to register a security event source",
+   "category": "Audit",
+   "channel": "Security"
+  },
+  {
+   "id": 5140,
+   "description": "A network share object was accessed",
+   "category": "Share",
+   "channel": "Security"
+  },
+  {
+   "id": 5145,
+   "description": "A network share object was checked to see whether client can be granted desired access",
+   "category": "Share",
+   "channel": "Security"
+  },
+  {
+   "id": 5142,
+   "description": "A network share object was added",
+   "category": "Share",
+   "channel": "Security"
+  },
+  {
+   "id": 5156,
+   "description": "The Windows Filtering Platform has permitted a connection",
+   "category": "Network",
+   "channel": "Security"
+  },
+  {
+   "id": 5157,
+   "description": "The Windows Filtering Platform has blocked a connection",
+   "category": "Network",
+   "channel": "Security"
+  },
+  {
+   "id": 4946,
+   "description": "A rule was added to Windows Firewall exception list",
+   "category": "Firewall",
+   "channel": "Security"
+  },
+  {
+   "id": 4947,
+   "description": "A rule was modified in Windows Firewall exception list",
+   "category": "Firewall",
+   "channel": "Security"
+  },
+  {
+   "id": 4948,
+   "description": "A rule was deleted from Windows Firewall exception list",
+   "category": "Firewall",
+   "channel": "Security"
+  },
+  {
+   "id": 4950,
+   "description": "A Windows Firewall setting has changed",
+   "category": "Firewall",
+   "channel": "Security"
+  },
+  {
+   "id": 5025,
+   "description": "The Windows Firewall Service has been stopped",
+   "category": "Firewall",
+   "channel": "Security"
+  },
+  {
+   "id": 4886,
+   "description": "Certificate Services received a certificate request",
+   "category": "PKI",
+   "channel": "Security"
+  },
+  {
+   "id": 4887,
+   "description": "Certificate Services approved a certificate request and issued a certificate",
+   "category": "PKI",
+   "channel": "Security"
+  },
+  {
+   "id": 4898,
+   "description": "Certificate Services loaded a template",
+   "category": "PKI",
+   "channel": "Security"
+  },
+  {
+   "id": 4899,
+   "description": "A Certificate Services template was updated",
+   "category": "PKI",
+   "channel": "Security"
+  },
+  {
+   "id": 6416,
+   "description": "A new external device was recognized by the system",
+   "category": "Device",
+   "channel": "Security"
+  },
+  {
+   "id": 4610,
+   "description": "An authentication package has been loaded by the LSA",
+   "category": "LSA",
+   "channel": "Security"
+  },
+  {
+   "id": 4611,
+   "description": "A trusted logon process has been registered with the LSA",
+   "category": "LSA",
+   "channel": "Security"
+  },
+  {
+   "id": 4614,
+   "description": "A notification package has been loaded by the SAM",
+   "category": "LSA",
+   "channel": "Security"
+  },
+  {
+   "id": 4622,
+   "description": "A security package has been loaded by the LSA",
+   "category": "LSA",
+   "channel": "Security"
+  },
+  {
+   "id": 4103,
+   "description": "PowerShell module logging",
+   "category": "PowerShell",
+   "channel": "Security"
+  },
+  {
+   "id": 4104,
+   "description": "PowerShell script block logging",
+   "category": "PowerShell",
+   "channel": "Security"
+  },
+  {
+   "id": 4100,
+   "description": "PowerShell engine error",
+   "category": "PowerShell",
+   "channel": "Security"
+  },
+  {
+   "id": 800,
+   "description": "PowerShell pipeline execution details (legacy)",
+   "category": "PowerShell",
+   "channel": "Other"
+  },
+  {
+   "id": 1116,
+   "description": "Windows Defender: malware detected",
+   "category": "Defender",
+   "channel": "Other"
+  },
+  {
+   "id": 1117,
+   "description": "Windows Defender: action taken",
+   "category": "Defender",
+   "channel": "Other"
+  },
+  {
+   "id": 5001,
+   "description": "Windows Defender: real-time protection disabled",
+   "category": "Defender",
+   "channel": "Security"
+  },
+  {
+   "id": 5007,
+   "description": "Windows Defender: configuration changed",
+   "category": "Defender",
+   "channel": "Security"
+  },
+  {
+   "id": 104,
+   "description": "System log cleared",
+   "category": "Audit",
+   "channel": "Other"
+  },
+  {
+   "id": 7045,
+   "description": "A new service was installed (System log)",
+   "category": "Service",
+   "channel": "Security"
+  },
+  {
+   "id": 7040,
+   "description": "Service start type changed (System log)",
+   "category": "Service",
+   "channel": "Security"
+  },
+  {
+   "id": 7036,
+   "description": "Service entered running/stopped state (System log)",
+   "category": "Service",
+   "channel": "Security"
+  },
+  {
+   "id": 7034,
+   "description": "Service terminated unexpectedly",
+   "category": "Service",
+   "channel": "Security"
+  },
+  {
+   "id": 6,
+   "description": "Driver loaded (Kernel-General/Code Integrity)",
+   "category": "Driver",
+   "channel": "Other"
+  },
+  {
+   "id": 106,
+   "description": "Task Scheduler: task registered",
+   "category": "Scheduled Task",
+   "channel": "Other"
+  },
+  {
+   "id": 140,
+   "description": "Task Scheduler: task updated",
+   "category": "Scheduled Task",
+   "channel": "Other"
+  },
+  {
+   "id": 141,
+   "description": "Task Scheduler: task deleted",
+   "category": "Scheduled Task",
+   "channel": "Other"
+  },
+  {
+   "id": 200,
+   "description": "Task Scheduler: action started",
+   "category": "Scheduled Task",
+   "channel": "Other"
+  },
+  {
+   "id": 5860,
+   "description": "WMI: temporary event consumer",
+   "category": "WMI",
+   "channel": "Security"
+  },
+  {
+   "id": 5861,
+   "description": "WMI: permanent event consumer registered",
+   "category": "WMI",
+   "channel": "Security"
+  },
+  {
+   "id": 1149,
+   "description": "RDP: user authentication succeeded (TerminalServices-RemoteConnectionManager)",
+   "category": "RDP",
+   "channel": "Other"
+  },
+  {
+   "id": 21,
+   "description": "RDP: session logon succeeded (LocalSessionManager)",
+   "category": "RDP",
+   "channel": "Other"
+  },
+  {
+   "id": 24,
+   "description": "RDP: session disconnected",
+   "category": "RDP",
+   "channel": "Other"
+  },
+  {
+   "id": 25,
+   "description": "RDP: session reconnected",
+   "category": "RDP",
+   "channel": "Other"
+  },
+  {
+   "id": 4100,
+   "description": "BITS job created (Bits-Client)",
+   "category": "BITS",
+   "channel": "Security"
+  },
+  {
+   "id": 59,
+   "description": "BITS job created",
+   "category": "BITS",
+   "channel": "Other"
+  },
+  {
+   "id": 60,
+   "description": "BITS job completed",
+   "category": "BITS",
+   "channel": "Other"
+  }
+ ],
+ "sysmon": [
+  {
+   "id": 1,
+   "description": "Process creation"
+  },
+  {
+   "id": 2,
+   "description": "File creation time changed"
+  },
+  {
+   "id": 3,
+   "description": "Network connection"
+  },
+  {
+   "id": 4,
+   "description": "Sysmon service state changed"
+  },
+  {
+   "id": 5,
+   "description": "Process terminated"
+  },
+  {
+   "id": 6,
+   "description": "Driver loaded"
+  },
+  {
+   "id": 7,
+   "description": "Image loaded"
+  },
+  {
+   "id": 8,
+   "description": "CreateRemoteThread"
+  },
+  {
+   "id": 9,
+   "description": "RawAccessRead"
+  },
+  {
+   "id": 10,
+   "description": "ProcessAccess"
+  },
+  {
+   "id": 11,
+   "description": "FileCreate"
+  },
+  {
+   "id": 12,
+   "description": "RegistryEvent (object create/delete)"
+  },
+  {
+   "id": 13,
+   "description": "RegistryEvent (value set)"
+  },
+  {
+   "id": 14,
+   "description": "RegistryEvent (key/value rename)"
+  },
+  {
+   "id": 15,
+   "description": "FileCreateStreamHash"
+  },
+  {
+   "id": 16,
+   "description": "Sysmon config state changed"
+  },
+  {
+   "id": 17,
+   "description": "PipeEvent (created)"
+  },
+  {
+   "id": 18,
+   "description": "PipeEvent (connected)"
+  },
+  {
+   "id": 19,
+   "description": "WmiEvent (filter)"
+  },
+  {
+   "id": 20,
+   "description": "WmiEvent (consumer)"
+  },
+  {
+   "id": 21,
+   "description": "WmiEvent (consumer to filter)"
+  },
+  {
+   "id": 22,
+   "description": "DNSEvent"
+  },
+  {
+   "id": 23,
+   "description": "FileDelete (archived)"
+  },
+  {
+   "id": 24,
+   "description": "ClipboardChange"
+  },
+  {
+   "id": 25,
+   "description": "ProcessTampering"
+  },
+  {
+   "id": 26,
+   "description": "FileDeleteDetected"
+  },
+  {
+   "id": 27,
+   "description": "FileBlockExecutable"
+  },
+  {
+   "id": 28,
+   "description": "FileBlockShredding"
+  },
+  {
+   "id": 29,
+   "description": "FileExecutableDetected"
+  }
+ ],
+ "auditd": [
+  {
+   "key": "execve",
+   "description": "Process execution (syscall)"
+  },
+  {
+   "key": "USER_LOGIN",
+   "description": "User login"
+  },
+  {
+   "key": "USER_AUTH",
+   "description": "User authentication"
+  },
+  {
+   "key": "USER_CHAUTHTOK",
+   "description": "Password change"
+  },
+  {
+   "key": "ADD_USER",
+   "description": "User added"
+  },
+  {
+   "key": "DEL_USER",
+   "description": "User deleted"
+  },
+  {
+   "key": "ADD_GROUP",
+   "description": "Group added"
+  },
+  {
+   "key": "USER_ROLE_CHANGE",
+   "description": "Role change"
+  },
+  {
+   "key": "CRED_ACQ",
+   "description": "Credential acquired"
+  },
+  {
+   "key": "USER_CMD",
+   "description": "User command via sudo"
+  },
+  {
+   "key": "open",
+   "description": "File open"
+  },
+  {
+   "key": "creat",
+   "description": "File create"
+  },
+  {
+   "key": "unlink",
+   "description": "File delete"
+  },
+  {
+   "key": "unlinkat",
+   "description": "File delete (at)"
+  },
+  {
+   "key": "chmod",
+   "description": "Permission change"
+  },
+  {
+   "key": "chown",
+   "description": "Ownership change"
+  },
+  {
+   "key": "init_module",
+   "description": "Kernel module load"
+  },
+  {
+   "key": "finit_module",
+   "description": "Kernel module load (fd)"
+  },
+  {
+   "key": "delete_module",
+   "description": "Kernel module unload"
+  },
+  {
+   "key": "ptrace",
+   "description": "Process trace"
+  },
+  {
+   "key": "setuid",
+   "description": "setuid syscall"
+  },
+  {
+   "key": "connect",
+   "description": "Network connect"
+  },
+  {
+   "key": "socket",
+   "description": "Socket creation"
+  },
+  {
+   "key": "bind",
+   "description": "Socket bind"
+  },
+  {
+   "key": "mount",
+   "description": "Filesystem mount"
+  },
+  {
+   "key": "cron",
+   "description": "Cron job execution"
+  },
+  {
+   "key": "SYSCALL",
+   "description": "Generic syscall record"
+  },
+  {
+   "key": "CONFIG_CHANGE",
+   "description": "Audit configuration change"
+  },
+  {
+   "key": "DAEMON_START",
+   "description": "auditd started"
+  },
+  {
+   "key": "DAEMON_END",
+   "description": "auditd stopped"
+  },
+  {
+   "key": "SERVICE_START",
+   "description": "systemd service start"
+  },
+  {
+   "key": "SERVICE_STOP",
+   "description": "systemd service stop"
+  }
+ ]
+}

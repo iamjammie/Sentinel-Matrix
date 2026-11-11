@@ -1,0 +1,67 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Modules, engines, datasets, build output
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Syntax-check every JavaScript module
+        run: |
+          for f in src/js/*.js build.js; do node --check "$f"; done
+
+      - name: Validate bundled datasets
+        run: python3 scripts/validate_data.py
+
+      - name: Run engine unit tests (no browser)
+        run: node tests/js/engine.test.js
+
+      - name: Datasets are regenerated deterministically (no drift)
+        run: |
+          cd data
+          python3 build_frameworks.py
+          python3 build_scenarios.py
+          python3 build_sigma_pack.py
+          cd ..
+          git diff --stat -- data/*.json
+          git diff --exit-code -- data/*.json || (echo "data/*.json is stale: regenerate and commit" && exit 1)
+
+      - name: Built single-file app is up to date
+        run: |
+          node build.js
+          git diff --exit-code -- dist/sentinel-matrix.html || (echo "dist/sentinel-matrix.html is stale: run node build.js and commit" && exit 1)
+
+      - name: Built app is self-contained (no external resources)
+        run: |
+          ! grep -nE 'src="https?://|href="https?://[^"]+\.(css|js)"|@import +url\(https?://|fonts\.googleapis' dist/sentinel-matrix.html \
+            || (echo "external resource reference found in dist/sentinel-matrix.html" && exit 1)
+
+  agent:
+    name: Python audit agent
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Byte-compile the agent
+        run: python3 -m py_compile agent/*.py
+      - name: Agent tests (pure-logic + API when deps present)
+        run: |
+          pip install pytest
+          pip install -r agent/requirements.txt || echo "optional agent deps unavailable; pure-logic tests still run"
+          python3 -m pytest tests/agent -q

@@ -1,0 +1,636 @@
+{
+ "framework": "MITRE D3FEND",
+ "dataset_kind": "bundled-compact",
+ "version": "compact-0.17",
+ "techniques": [
+  {
+   "id": "D3-AL",
+   "name": "Account Locking",
+   "tactic": "Isolate",
+   "description": "Temporarily disabling user accounts after failed authentication.",
+   "attack_techniques": [
+    "T1110",
+    "T1110.001",
+    "T1110.003",
+    "T1110.004"
+   ]
+  },
+  {
+   "id": "D3-ACH",
+   "name": "Application Configuration Hardening",
+   "tactic": "Harden",
+   "description": "Hardening application configuration.",
+   "attack_techniques": [
+    "T1137",
+    "T1559",
+    "T1218"
+   ]
+  },
+  {
+   "id": "D3-AH",
+   "name": "Application Hardening",
+   "tactic": "Harden",
+   "description": "Hardening applications against exploitation.",
+   "attack_techniques": [
+    "T1203",
+    "T1190",
+    "T1068"
+   ]
+  },
+  {
+   "id": "D3-CH",
+   "name": "Credential Hardening",
+   "tactic": "Harden",
+   "description": "Hardening credentials.",
+   "attack_techniques": [
+    "T1110",
+    "T1552",
+    "T1078"
+   ]
+  },
+  {
+   "id": "D3-MFA",
+   "name": "Multi-factor Authentication",
+   "tactic": "Harden",
+   "description": "Requiring multiple factors.",
+   "attack_techniques": [
+    "T1078",
+    "T1110",
+    "T1133",
+    "T1021.001"
+   ]
+  },
+  {
+   "id": "D3-CP",
+   "name": "Certificate Pinning",
+   "tactic": "Harden",
+   "description": "Pinning certificates.",
+   "attack_techniques": [
+    "T1557",
+    "T1553.004"
+   ]
+  },
+  {
+   "id": "D3-PH",
+   "name": "Platform Hardening",
+   "tactic": "Harden",
+   "description": "Hardening platforms.",
+   "attack_techniques": [
+    "T1542",
+    "T1014",
+    "T1068"
+   ]
+  },
+  {
+   "id": "D3-DLIC",
+   "name": "Driver Load Integrity Checking",
+   "tactic": "Harden",
+   "description": "Verifying driver integrity.",
+   "attack_techniques": [
+    "T1547.008",
+    "T1014",
+    "T1068"
+   ]
+  },
+  {
+   "id": "D3-FEMC",
+   "name": "File Encryption",
+   "tactic": "Harden",
+   "description": "Encrypting files at rest.",
+   "attack_techniques": [
+    "T1005",
+    "T1039",
+    "T1552.001"
+   ]
+  },
+  {
+   "id": "D3-NTA",
+   "name": "Network Traffic Analysis",
+   "tactic": "Detect",
+   "description": "Analysing network traffic for anomalies.",
+   "attack_techniques": [
+    "T1071",
+    "T1048",
+    "T1571",
+    "T1572",
+    "T1090",
+    "T1041",
+    "T1105",
+    "T1046"
+   ]
+  },
+  {
+   "id": "D3-CSPP",
+   "name": "Client-server Payload Profiling",
+   "tactic": "Detect",
+   "description": "Profiling payloads.",
+   "attack_techniques": [
+    "T1071.001",
+    "T1105",
+    "T1132"
+   ]
+  },
+  {
+   "id": "D3-DNSTA",
+   "name": "DNS Traffic Analysis",
+   "tactic": "Detect",
+   "description": "Analysing DNS traffic.",
+   "attack_techniques": [
+    "T1071.004",
+    "T1568.002",
+    "T1048.003"
+   ]
+  },
+  {
+   "id": "D3-PMAD",
+   "name": "Protocol Metadata Anomaly Detection",
+   "tactic": "Detect",
+   "description": "Anomalies in protocol metadata.",
+   "attack_techniques": [
+    "T1071",
+    "T1571",
+    "T1095",
+    "T1572"
+   ]
+  },
+  {
+   "id": "D3-RTSD",
+   "name": "Remote Terminal Session Detection",
+   "tactic": "Detect",
+   "description": "Detecting remote sessions.",
+   "attack_techniques": [
+    "T1021.001",
+    "T1021.004",
+    "T1021.005",
+    "T1563.002"
+   ]
+  },
+  {
+   "id": "D3-PA",
+   "name": "Process Analysis",
+   "tactic": "Detect",
+   "description": "Analysing processes.",
+   "attack_techniques": [
+    "T1055",
+    "T1059",
+    "T1218",
+    "T1036"
+   ]
+  },
+  {
+   "id": "D3-PSA",
+   "name": "Process Spawn Analysis",
+   "tactic": "Detect",
+   "description": "Analysing process trees.",
+   "attack_techniques": [
+    "T1059",
+    "T1204",
+    "T1218",
+    "T1566.001",
+    "T1047"
+   ]
+  },
+  {
+   "id": "D3-PLA",
+   "name": "Process Lineage Analysis",
+   "tactic": "Detect",
+   "description": "Analysing process ancestry.",
+   "attack_techniques": [
+    "T1059.001",
+    "T1566.001",
+    "T1204.002",
+    "T1047",
+    "T1569.002"
+   ]
+  },
+  {
+   "id": "D3-SCA",
+   "name": "System Call Analysis",
+   "tactic": "Detect",
+   "description": "Analysing system calls.",
+   "attack_techniques": [
+    "T1055",
+    "T1106",
+    "T1003.001"
+   ]
+  },
+  {
+   "id": "D3-PCSV",
+   "name": "Process Code Segment Verification",
+   "tactic": "Detect",
+   "description": "Verifying process code segments.",
+   "attack_techniques": [
+    "T1055",
+    "T1620",
+    "T1574"
+   ]
+  },
+  {
+   "id": "D3-FA",
+   "name": "File Analysis",
+   "tactic": "Detect",
+   "description": "Analysing files.",
+   "attack_techniques": [
+    "T1027",
+    "T1036",
+    "T1105",
+    "T1566.001"
+   ]
+  },
+  {
+   "id": "D3-FCR",
+   "name": "File Content Rules",
+   "tactic": "Detect",
+   "description": "Content-based file rules.",
+   "attack_techniques": [
+    "T1027",
+    "T1566.001",
+    "T1505.003"
+   ]
+  },
+  {
+   "id": "D3-DA",
+   "name": "Dynamic Analysis",
+   "tactic": "Detect",
+   "description": "Sandbox detonation.",
+   "attack_techniques": [
+    "T1566.001",
+    "T1204.002",
+    "T1027"
+   ]
+  },
+  {
+   "id": "D3-UBA",
+   "name": "User Behavior Analysis",
+   "tactic": "Detect",
+   "description": "Analysing user behaviour.",
+   "attack_techniques": [
+    "T1078",
+    "T1110",
+    "T1021",
+    "T1114",
+    "T1530",
+    "T1213"
+   ]
+  },
+  {
+   "id": "D3-ANAA",
+   "name": "Authentication Event Thresholding",
+   "tactic": "Detect",
+   "description": "Thresholding authentication events.",
+   "attack_techniques": [
+    "T1110",
+    "T1078",
+    "T1621"
+   ]
+  },
+  {
+   "id": "D3-ANET",
+   "name": "Authorization Event Thresholding",
+   "tactic": "Detect",
+   "description": "Thresholding authorization events.",
+   "attack_techniques": [
+    "T1078",
+    "T1098",
+    "T1484"
+   ]
+  },
+  {
+   "id": "D3-CCSA",
+   "name": "Credential Compromise Scope Analysis",
+   "tactic": "Detect",
+   "description": "Assessing compromised credential scope.",
+   "attack_techniques": [
+    "T1003",
+    "T1078",
+    "T1550"
+   ]
+  },
+  {
+   "id": "D3-DAM",
+   "name": "Domain Account Monitoring",
+   "tactic": "Detect",
+   "description": "Monitoring domain accounts.",
+   "attack_techniques": [
+    "T1136.002",
+    "T1098",
+    "T1078.002",
+    "T1003.006",
+    "T1558"
+   ]
+  },
+  {
+   "id": "D3-LAM",
+   "name": "Local Account Monitoring",
+   "tactic": "Detect",
+   "description": "Monitoring local accounts.",
+   "attack_techniques": [
+    "T1136.001",
+    "T1078.003",
+    "T1564.002"
+   ]
+  },
+  {
+   "id": "D3-RAPA",
+   "name": "Resource Access Pattern Analysis",
+   "tactic": "Detect",
+   "description": "Access pattern analysis.",
+   "attack_techniques": [
+    "T1005",
+    "T1039",
+    "T1083",
+    "T1213",
+    "T1530"
+   ]
+  },
+  {
+   "id": "D3-SDA",
+   "name": "Session Duration Analysis",
+   "tactic": "Detect",
+   "description": "Session duration analysis.",
+   "attack_techniques": [
+    "T1078",
+    "T1021"
+   ]
+  },
+  {
+   "id": "D3-JFAPA",
+   "name": "Job Function Access Pattern Analysis",
+   "tactic": "Detect",
+   "description": "Job-function based analysis.",
+   "attack_techniques": [
+    "T1078",
+    "T1213",
+    "T1530"
+   ]
+  },
+  {
+   "id": "D3-SFA",
+   "name": "System File Analysis",
+   "tactic": "Detect",
+   "description": "Analysing system files.",
+   "attack_techniques": [
+    "T1036.003",
+    "T1554",
+    "T1574.001"
+   ]
+  },
+  {
+   "id": "D3-SBV",
+   "name": "Service Binary Verification",
+   "tactic": "Detect",
+   "description": "Verifying service binaries.",
+   "attack_techniques": [
+    "T1543.003",
+    "T1574.010",
+    "T1569.002"
+   ]
+  },
+  {
+   "id": "D3-OSM",
+   "name": "Operating System Monitoring",
+   "tactic": "Detect",
+   "description": "OS-level monitoring.",
+   "attack_techniques": [
+    "T1547",
+    "T1053",
+    "T1543",
+    "T1546",
+    "T1112",
+    "T1562"
+   ]
+  },
+  {
+   "id": "D3-SJA",
+   "name": "Scheduled Job Analysis",
+   "tactic": "Detect",
+   "description": "Analysing scheduled jobs.",
+   "attack_techniques": [
+    "T1053",
+    "T1053.005",
+    "T1053.003"
+   ]
+  },
+  {
+   "id": "D3-SICA",
+   "name": "System Init Config Analysis",
+   "tactic": "Detect",
+   "description": "Analysing init configuration.",
+   "attack_techniques": [
+    "T1547",
+    "T1037",
+    "T1543"
+   ]
+  },
+  {
+   "id": "D3-FBA",
+   "name": "Firmware Behavior Analysis",
+   "tactic": "Detect",
+   "description": "Firmware behavior analysis.",
+   "attack_techniques": [
+    "T1542",
+    "T1495"
+   ]
+  },
+  {
+   "id": "D3-MBT",
+   "name": "Memory Boundary Tracking",
+   "tactic": "Detect",
+   "description": "Memory boundary tracking.",
+   "attack_techniques": [
+    "T1055",
+    "T1620"
+   ]
+  },
+  {
+   "id": "D3-EI",
+   "name": "Execution Isolation",
+   "tactic": "Isolate",
+   "description": "Isolating execution.",
+   "attack_techniques": [
+    "T1059",
+    "T1204",
+    "T1203"
+   ]
+  },
+  {
+   "id": "D3-EAL",
+   "name": "Executable Allowlisting",
+   "tactic": "Isolate",
+   "description": "Allowlisting executables.",
+   "attack_techniques": [
+    "T1204.002",
+    "T1218",
+    "T1059",
+    "T1105"
+   ]
+  },
+  {
+   "id": "D3-EDL",
+   "name": "Executable Denylisting",
+   "tactic": "Isolate",
+   "description": "Denylisting executables.",
+   "attack_techniques": [
+    "T1218",
+    "T1127"
+   ]
+  },
+  {
+   "id": "D3-NI",
+   "name": "Network Isolation",
+   "tactic": "Isolate",
+   "description": "Isolating networks.",
+   "attack_techniques": [
+    "T1021",
+    "T1210",
+    "T1570",
+    "T1046",
+    "T1048"
+   ]
+  },
+  {
+   "id": "D3-ITF",
+   "name": "Inbound Traffic Filtering",
+   "tactic": "Isolate",
+   "description": "Filtering inbound traffic.",
+   "attack_techniques": [
+    "T1190",
+    "T1133",
+    "T1021"
+   ]
+  },
+  {
+   "id": "D3-OTF",
+   "name": "Outbound Traffic Filtering",
+   "tactic": "Isolate",
+   "description": "Filtering outbound traffic.",
+   "attack_techniques": [
+    "T1071",
+    "T1105",
+    "T1041",
+    "T1048",
+    "T1567"
+   ]
+  },
+  {
+   "id": "D3-DNSDL",
+   "name": "DNS Denylisting",
+   "tactic": "Isolate",
+   "description": "DNS denylisting.",
+   "attack_techniques": [
+    "T1071.004",
+    "T1568",
+    "T1566.002"
+   ]
+  },
+  {
+   "id": "D3-MAC",
+   "name": "Mandatory Access Control",
+   "tactic": "Isolate",
+   "description": "Mandatory access control.",
+   "attack_techniques": [
+    "T1003",
+    "T1005",
+    "T1222"
+   ]
+  },
+  {
+   "id": "D3-FE",
+   "name": "File Eviction",
+   "tactic": "Evict",
+   "description": "Removing malicious files.",
+   "attack_techniques": [
+    "T1105",
+    "T1505.003"
+   ]
+  },
+  {
+   "id": "D3-PE",
+   "name": "Process Eviction",
+   "tactic": "Evict",
+   "description": "Terminating processes.",
+   "attack_techniques": [
+    "T1055",
+    "T1059"
+   ]
+  },
+  {
+   "id": "D3-CE",
+   "name": "Credential Eviction",
+   "tactic": "Evict",
+   "description": "Revoking credentials.",
+   "attack_techniques": [
+    "T1078",
+    "T1003",
+    "T1550",
+    "T1528"
+   ]
+  },
+  {
+   "id": "D3-ANCI",
+   "name": "Authentication Cache Invalidation",
+   "tactic": "Evict",
+   "description": "Invalidating authentication caches.",
+   "attack_techniques": [
+    "T1550.003",
+    "T1558",
+    "T1606"
+   ]
+  },
+  {
+   "id": "D3-RKD",
+   "name": "Registry Key Deletion",
+   "tactic": "Evict",
+   "description": "Deleting malicious registry keys.",
+   "attack_techniques": [
+    "T1547.001",
+    "T1112",
+    "T1546"
+   ]
+  },
+  {
+   "id": "D3-DE",
+   "name": "Decoy Environment",
+   "tactic": "Deceive",
+   "description": "Decoy environments.",
+   "attack_techniques": [
+    "T1046",
+    "T1018",
+    "T1021"
+   ]
+  },
+  {
+   "id": "D3-DO",
+   "name": "Decoy Object",
+   "tactic": "Deceive",
+   "description": "Decoy objects such as honey accounts/files.",
+   "attack_techniques": [
+    "T1087",
+    "T1003.006",
+    "T1558.003",
+    "T1005",
+    "T1552"
+   ]
+  },
+  {
+   "id": "D3-RF",
+   "name": "Restore File",
+   "tactic": "Restore",
+   "description": "Restoring files from backup.",
+   "attack_techniques": [
+    "T1486",
+    "T1485",
+    "T1565"
+   ]
+  },
+  {
+   "id": "D3-RUA",
+   "name": "Restore User Account Access",
+   "tactic": "Restore",
+   "description": "Restoring account access.",
+   "attack_techniques": [
+    "T1531"
+   ]
+  }
+ ]
+}

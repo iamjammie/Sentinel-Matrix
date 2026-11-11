@@ -1,0 +1,21 @@
+title: Potential Kerberoasting via Service Ticket Requests
+id: 11111111-2222-3333-4444-555555555555
+status: experimental
+description: Detects high volume RC4 service ticket requests indicative of Kerberoasting
+author: detection-eng
+logsource:
+    product: windows
+    service: security
+detection:
+    selection:
+        EventID: 4769
+        TicketEncryptionType: '0x17'
+    filter:
+        ServiceName: 'krbtgt'
+    condition: selection and not filter
+falsepositives:
+    - Legacy applications using RC4
+level: high
+tags:
+    - attack.credential_access
+    - attack.t1558.003

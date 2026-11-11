@@ -1,0 +1,1261 @@
+{
+ "data_components": [
+  {
+   "id": "DC-PC",
+   "source": "Process",
+   "component": "Process Creation",
+   "log_source_types": [
+    "windows_security",
+    "sysmon",
+    "edr",
+    "linux_auditd"
+   ],
+   "windows_event_ids": [
+    4688
+   ],
+   "sysmon_event_ids": [
+    1
+   ],
+   "auditd_keys": [
+    "execve"
+   ]
+  },
+  {
+   "id": "DC-PT",
+   "source": "Process",
+   "component": "Process Termination",
+   "log_source_types": [
+    "windows_security",
+    "sysmon",
+    "edr"
+   ],
+   "windows_event_ids": [
+    4689
+   ],
+   "sysmon_event_ids": [
+    5
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-PA",
+   "source": "Process",
+   "component": "Process Access",
+   "log_source_types": [
+    "sysmon",
+    "edr"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [
+    10
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-PM",
+   "source": "Process",
+   "component": "Process Metadata",
+   "log_source_types": [
+    "edr",
+    "sysmon"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [
+    1
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-OA",
+   "source": "Process",
+   "component": "OS API Execution",
+   "log_source_types": [
+    "edr"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-CE",
+   "source": "Command",
+   "component": "Command Execution",
+   "log_source_types": [
+    "windows_security",
+    "sysmon",
+    "powershell",
+    "linux_auditd",
+    "edr",
+    "bash_history"
+   ],
+   "windows_event_ids": [
+    4688,
+    4104,
+    4103
+   ],
+   "sysmon_event_ids": [
+    1
+   ],
+   "auditd_keys": [
+    "execve"
+   ]
+  },
+  {
+   "id": "DC-SE",
+   "source": "Script",
+   "component": "Script Execution",
+   "log_source_types": [
+    "powershell",
+    "sysmon",
+    "edr",
+    "amsi"
+   ],
+   "windows_event_ids": [
+    4104,
+    4103,
+    4100
+   ],
+   "sysmon_event_ids": [
+    1,
+    7
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-NC",
+   "source": "Network Traffic",
+   "component": "Network Connection Creation",
+   "log_source_types": [
+    "sysmon",
+    "firewall",
+    "netflow",
+    "edr",
+    "zeek"
+   ],
+   "windows_event_ids": [
+    5156
+   ],
+   "sysmon_event_ids": [
+    3
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-NF",
+   "source": "Network Traffic",
+   "component": "Network Traffic Flow",
+   "log_source_types": [
+    "netflow",
+    "firewall",
+    "ndr",
+    "zeek"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-NT",
+   "source": "Network Traffic",
+   "component": "Network Traffic Content",
+   "log_source_types": [
+    "ids_ips",
+    "ndr",
+    "proxy",
+    "zeek",
+    "dns"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-LS",
+   "source": "Logon Session",
+   "component": "Logon Session Creation",
+   "log_source_types": [
+    "windows_security",
+    "linux_auditd",
+    "vpn",
+    "identity"
+   ],
+   "windows_event_ids": [
+    4624,
+    4625,
+    4648,
+    4672,
+    4776,
+    4768,
+    4769,
+    4771
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": [
+    "USER_LOGIN",
+    "USER_AUTH"
+   ]
+  },
+  {
+   "id": "DC-LM",
+   "source": "Logon Session",
+   "component": "Logon Session Metadata",
+   "log_source_types": [
+    "windows_security",
+    "identity"
+   ],
+   "windows_event_ids": [
+    4624,
+    4634,
+    4647
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-UA",
+   "source": "User Account",
+   "component": "User Account Authentication",
+   "log_source_types": [
+    "windows_security",
+    "identity",
+    "vpn",
+    "linux_auditd",
+    "cloud_audit"
+   ],
+   "windows_event_ids": [
+    4624,
+    4625,
+    4771,
+    4776,
+    4768,
+    4769
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": [
+    "USER_AUTH",
+    "USER_LOGIN"
+   ]
+  },
+  {
+   "id": "DC-UM",
+   "source": "User Account",
+   "component": "User Account Modification",
+   "log_source_types": [
+    "windows_security",
+    "identity",
+    "cloud_audit"
+   ],
+   "windows_event_ids": [
+    4738,
+    4724,
+    4723,
+    4767,
+    4740,
+    4781
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": [
+    "USER_CHAUTHTOK"
+   ]
+  },
+  {
+   "id": "DC-UC",
+   "source": "User Account",
+   "component": "User Account Creation",
+   "log_source_types": [
+    "windows_security",
+    "identity",
+    "cloud_audit",
+    "linux_auditd"
+   ],
+   "windows_event_ids": [
+    4720,
+    4722
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": [
+    "ADD_USER"
+   ]
+  },
+  {
+   "id": "DC-UD",
+   "source": "User Account",
+   "component": "User Account Deletion",
+   "log_source_types": [
+    "windows_security",
+    "identity",
+    "cloud_audit"
+   ],
+   "windows_event_ids": [
+    4726
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": [
+    "DEL_USER"
+   ]
+  },
+  {
+   "id": "DC-UMD",
+   "source": "User Account",
+   "component": "User Account Metadata",
+   "log_source_types": [
+    "identity",
+    "windows_security"
+   ],
+   "windows_event_ids": [
+    4798,
+    4799
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-GM",
+   "source": "Group",
+   "component": "Group Modification",
+   "log_source_types": [
+    "windows_security",
+    "identity",
+    "cloud_audit"
+   ],
+   "windows_event_ids": [
+    4728,
+    4732,
+    4756,
+    4729,
+    4733,
+    4757
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": [
+    "ADD_GROUP"
+   ]
+  },
+  {
+   "id": "DC-GE",
+   "source": "Group",
+   "component": "Group Enumeration",
+   "log_source_types": [
+    "windows_security",
+    "identity"
+   ],
+   "windows_event_ids": [
+    4798,
+    4799,
+    4661
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-AD",
+   "source": "Active Directory",
+   "component": "Active Directory Object Modification",
+   "log_source_types": [
+    "windows_security",
+    "active_directory"
+   ],
+   "windows_event_ids": [
+    5136,
+    5137,
+    5141,
+    4662,
+    4780
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-ADA",
+   "source": "Active Directory",
+   "component": "Active Directory Object Access",
+   "log_source_types": [
+    "windows_security",
+    "active_directory"
+   ],
+   "windows_event_ids": [
+    4662,
+    4661
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-ADC",
+   "source": "Active Directory",
+   "component": "Active Directory Credential Request",
+   "log_source_types": [
+    "windows_security",
+    "active_directory"
+   ],
+   "windows_event_ids": [
+    4768,
+    4769,
+    4770,
+    4771
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-ADCR",
+   "source": "Active Directory",
+   "component": "Active Directory Object Creation",
+   "log_source_types": [
+    "windows_security",
+    "active_directory"
+   ],
+   "windows_event_ids": [
+    5137,
+    4741
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-FC",
+   "source": "File",
+   "component": "File Creation",
+   "log_source_types": [
+    "sysmon",
+    "edr",
+    "windows_security",
+    "linux_auditd"
+   ],
+   "windows_event_ids": [
+    4663
+   ],
+   "sysmon_event_ids": [
+    11
+   ],
+   "auditd_keys": [
+    "open",
+    "creat"
+   ]
+  },
+  {
+   "id": "DC-FM",
+   "source": "File",
+   "component": "File Modification",
+   "log_source_types": [
+    "sysmon",
+    "edr",
+    "windows_security",
+    "linux_auditd"
+   ],
+   "windows_event_ids": [
+    4663,
+    4670
+   ],
+   "sysmon_event_ids": [
+    2,
+    11
+   ],
+   "auditd_keys": [
+    "write"
+   ]
+  },
+  {
+   "id": "DC-FA",
+   "source": "File",
+   "component": "File Access",
+   "log_source_types": [
+    "windows_security",
+    "linux_auditd",
+    "edr"
+   ],
+   "windows_event_ids": [
+    4663,
+    4656
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": [
+    "open"
+   ]
+  },
+  {
+   "id": "DC-FD",
+   "source": "File",
+   "component": "File Deletion",
+   "log_source_types": [
+    "sysmon",
+    "windows_security",
+    "edr"
+   ],
+   "windows_event_ids": [
+    4660,
+    4663
+   ],
+   "sysmon_event_ids": [
+    23,
+    26
+   ],
+   "auditd_keys": [
+    "unlink",
+    "unlinkat"
+   ]
+  },
+  {
+   "id": "DC-FMD",
+   "source": "File",
+   "component": "File Metadata",
+   "log_source_types": [
+    "edr",
+    "sysmon"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [
+    11,
+    15
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-RK",
+   "source": "Windows Registry",
+   "component": "Windows Registry Key Modification",
+   "log_source_types": [
+    "sysmon",
+    "windows_security",
+    "edr"
+   ],
+   "windows_event_ids": [
+    4657
+   ],
+   "sysmon_event_ids": [
+    13,
+    14
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-RC",
+   "source": "Windows Registry",
+   "component": "Windows Registry Key Creation",
+   "log_source_types": [
+    "sysmon",
+    "edr"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [
+    12
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-RD",
+   "source": "Windows Registry",
+   "component": "Windows Registry Key Deletion",
+   "log_source_types": [
+    "sysmon",
+    "edr"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [
+    12
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-RA",
+   "source": "Windows Registry",
+   "component": "Windows Registry Key Access",
+   "log_source_types": [
+    "windows_security",
+    "edr"
+   ],
+   "windows_event_ids": [
+    4656,
+    4663
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-ML",
+   "source": "Module",
+   "component": "Module Load",
+   "log_source_types": [
+    "sysmon",
+    "edr"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [
+    7
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-SC",
+   "source": "Service",
+   "component": "Service Creation",
+   "log_source_types": [
+    "windows_system",
+    "windows_security",
+    "sysmon",
+    "linux_syslog"
+   ],
+   "windows_event_ids": [
+    7045,
+    4697
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-SM",
+   "source": "Service",
+   "component": "Service Modification",
+   "log_source_types": [
+    "windows_system",
+    "windows_security"
+   ],
+   "windows_event_ids": [
+    7040,
+    7036
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-SMD",
+   "source": "Service",
+   "component": "Service Metadata",
+   "log_source_types": [
+    "windows_system"
+   ],
+   "windows_event_ids": [
+    7036
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-SJ",
+   "source": "Scheduled Job",
+   "component": "Scheduled Job Creation",
+   "log_source_types": [
+    "windows_security",
+    "windows_taskscheduler",
+    "linux_syslog",
+    "linux_auditd"
+   ],
+   "windows_event_ids": [
+    4698,
+    106,
+    140
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": [
+    "cron"
+   ]
+  },
+  {
+   "id": "DC-SJM",
+   "source": "Scheduled Job",
+   "component": "Scheduled Job Modification",
+   "log_source_types": [
+    "windows_security",
+    "windows_taskscheduler"
+   ],
+   "windows_event_ids": [
+    4702,
+    4699
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-WMI",
+   "source": "WMI",
+   "component": "WMI Creation",
+   "log_source_types": [
+    "sysmon",
+    "windows_wmi"
+   ],
+   "windows_event_ids": [
+    5861,
+    5860
+   ],
+   "sysmon_event_ids": [
+    19,
+    20,
+    21
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-NP",
+   "source": "Named Pipe",
+   "component": "Named Pipe Metadata",
+   "log_source_types": [
+    "sysmon",
+    "edr"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [
+    17,
+    18
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-DL",
+   "source": "Driver",
+   "component": "Driver Load",
+   "log_source_types": [
+    "sysmon",
+    "windows_system",
+    "edr"
+   ],
+   "windows_event_ids": [
+    6,
+    219
+   ],
+   "sysmon_event_ids": [
+    6
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-DRV",
+   "source": "Driver",
+   "component": "Driver Metadata",
+   "log_source_types": [
+    "sysmon",
+    "edr"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [
+    6
+   ],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-KM",
+   "source": "Kernel",
+   "component": "Kernel Module Load",
+   "log_source_types": [
+    "linux_auditd",
+    "linux_syslog",
+    "edr"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": [
+    "init_module",
+    "finit_module"
+   ]
+  },
+  {
+   "id": "DC-AL",
+   "source": "Application Log",
+   "component": "Application Log Content",
+   "log_source_types": [
+    "application",
+    "web_server",
+    "email_security",
+    "windows_application"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-WC",
+   "source": "Web Credential",
+   "component": "Web Credential Usage",
+   "log_source_types": [
+    "cloud_audit",
+    "identity",
+    "web_server"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-WCC",
+   "source": "Web Credential",
+   "component": "Web Credential Creation",
+   "log_source_types": [
+    "cloud_audit",
+    "identity"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-DC",
+   "source": "Drive",
+   "component": "Drive Creation",
+   "log_source_types": [
+    "windows_system",
+    "sysmon",
+    "edr"
+   ],
+   "windows_event_ids": [
+    6416,
+    4663
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-DA",
+   "source": "Drive",
+   "component": "Drive Access",
+   "log_source_types": [
+    "windows_security",
+    "edr"
+   ],
+   "windows_event_ids": [
+    4663
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-DM",
+   "source": "Drive",
+   "component": "Drive Modification",
+   "log_source_types": [
+    "windows_security",
+    "edr"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-CRT",
+   "source": "Certificate",
+   "component": "Certificate Registration",
+   "log_source_types": [
+    "pki",
+    "windows_security"
+   ],
+   "windows_event_ids": [
+    4886,
+    4887,
+    4898
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-DN",
+   "source": "Domain Name",
+   "component": "Domain Registration",
+   "log_source_types": [
+    "threat_intel"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-DNP",
+   "source": "Domain Name",
+   "component": "Passive DNS",
+   "log_source_types": [
+    "dns",
+    "threat_intel"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-DNA",
+   "source": "Domain Name",
+   "component": "Active DNS",
+   "log_source_types": [
+    "dns"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-IS",
+   "source": "Internet Scan",
+   "component": "Response Content",
+   "log_source_types": [
+    "threat_intel"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-ISM",
+   "source": "Internet Scan",
+   "component": "Response Metadata",
+   "log_source_types": [
+    "threat_intel"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-CSM",
+   "source": "Cloud Service",
+   "component": "Cloud Service Modification",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-CSE",
+   "source": "Cloud Service",
+   "component": "Cloud Service Enumeration",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-CSD",
+   "source": "Cloud Service",
+   "component": "Cloud Service Disable",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-CSMD",
+   "source": "Cloud Service",
+   "component": "Cloud Service Metadata",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-CST",
+   "source": "Cloud Storage",
+   "component": "Cloud Storage Access",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-CSTM",
+   "source": "Cloud Storage",
+   "component": "Cloud Storage Modification",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-CSTE",
+   "source": "Cloud Storage",
+   "component": "Cloud Storage Enumeration",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-IC",
+   "source": "Instance",
+   "component": "Instance Creation",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-IMD",
+   "source": "Instance",
+   "component": "Instance Metadata",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-IMod",
+   "source": "Instance",
+   "component": "Instance Modification",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-IStart",
+   "source": "Instance",
+   "component": "Instance Start",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-IStop",
+   "source": "Instance",
+   "component": "Instance Stop",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-IDel",
+   "source": "Instance",
+   "component": "Instance Deletion",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-SNAP",
+   "source": "Snapshot",
+   "component": "Snapshot Creation",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-VOL",
+   "source": "Volume",
+   "component": "Volume Modification",
+   "log_source_types": [
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-SH",
+   "source": "Sensor Health",
+   "component": "Host Status",
+   "log_source_types": [
+    "edr",
+    "siem_internal",
+    "windows_system"
+   ],
+   "windows_event_ids": [
+    1100,
+    1102,
+    104,
+    1104
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-FW",
+   "source": "Firewall",
+   "component": "Firewall Rule Modification",
+   "log_source_types": [
+    "windows_security",
+    "firewall",
+    "cloud_audit"
+   ],
+   "windows_event_ids": [
+    4946,
+    4947,
+    4948,
+    4950
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-FWD",
+   "source": "Firewall",
+   "component": "Firewall Disable",
+   "log_source_types": [
+    "windows_security",
+    "firewall",
+    "cloud_audit"
+   ],
+   "windows_event_ids": [
+    4950,
+    5025
+   ],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-FWE",
+   "source": "Firewall",
+   "component": "Firewall Enumeration",
+   "log_source_types": [
+    "windows_security",
+    "cloud_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-IMG",
+   "source": "Image",
+   "component": "Image Creation",
+   "log_source_types": [
+    "cloud_audit",
+    "container_runtime"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-IMGM",
+   "source": "Image",
+   "component": "Image Metadata",
+   "log_source_types": [
+    "cloud_audit",
+    "container_runtime"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-CON",
+   "source": "Container",
+   "component": "Container Creation",
+   "log_source_types": [
+    "container_runtime",
+    "kubernetes_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-CONS",
+   "source": "Container",
+   "component": "Container Start",
+   "log_source_types": [
+    "container_runtime",
+    "kubernetes_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-CONE",
+   "source": "Container",
+   "component": "Container Enumeration",
+   "log_source_types": [
+    "kubernetes_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-POD",
+   "source": "Pod",
+   "component": "Pod Creation",
+   "log_source_types": [
+    "kubernetes_audit"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-FWM",
+   "source": "Firmware",
+   "component": "Firmware Modification",
+   "log_source_types": [
+    "edr",
+    "network_device"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-SNMP",
+   "source": "Network Traffic",
+   "component": "Network Traffic Content",
+   "log_source_types": [
+    "network_device",
+    "snmp"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-PERS",
+   "source": "Persona",
+   "component": "Social Media",
+   "log_source_types": [
+    "threat_intel"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-MAL",
+   "source": "Malware Repository",
+   "component": "Malware Content",
+   "log_source_types": [
+    "threat_intel"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  },
+  {
+   "id": "DC-WEBM",
+   "source": "Web Credential",
+   "component": "Web Credential Usage",
+   "log_source_types": [
+    "proxy",
+    "web_server"
+   ],
+   "windows_event_ids": [],
+   "sysmon_event_ids": [],
+   "auditd_keys": []
+  }
+ ]
+}

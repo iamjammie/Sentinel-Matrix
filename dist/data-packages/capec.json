@@ -1,0 +1,379 @@
+{
+ "framework": "MITRE CAPEC",
+ "dataset_kind": "bundled-compact",
+ "version": "compact-3.9",
+ "patterns": [
+  {
+   "id": "CAPEC-98",
+   "name": "Phishing",
+   "description": "Social engineering to obtain sensitive information or deliver malware.",
+   "attack_techniques": [
+    "T1566"
+   ]
+  },
+  {
+   "id": "CAPEC-163",
+   "name": "Spear Phishing",
+   "description": "Targeted phishing.",
+   "attack_techniques": [
+    "T1566.001",
+    "T1566.002"
+   ]
+  },
+  {
+   "id": "CAPEC-49",
+   "name": "Password Brute Forcing",
+   "description": "Trying many passwords.",
+   "attack_techniques": [
+    "T1110",
+    "T1110.001"
+   ]
+  },
+  {
+   "id": "CAPEC-565",
+   "name": "Password Spraying",
+   "description": "Few passwords against many accounts.",
+   "attack_techniques": [
+    "T1110.003"
+   ]
+  },
+  {
+   "id": "CAPEC-600",
+   "name": "Credential Stuffing",
+   "description": "Reusing leaked credentials.",
+   "attack_techniques": [
+    "T1110.004"
+   ]
+  },
+  {
+   "id": "CAPEC-509",
+   "name": "Kerberoasting",
+   "description": "Requesting service tickets to crack offline.",
+   "attack_techniques": [
+    "T1558.003"
+   ]
+  },
+  {
+   "id": "CAPEC-645",
+   "name": "Use of Captured Tickets (Pass The Ticket)",
+   "description": "Replaying Kerberos tickets.",
+   "attack_techniques": [
+    "T1550.003"
+   ]
+  },
+  {
+   "id": "CAPEC-644",
+   "name": "Use of Captured Hashes (Pass The Hash)",
+   "description": "Replaying NTLM hashes.",
+   "attack_techniques": [
+    "T1550.002"
+   ]
+  },
+  {
+   "id": "CAPEC-560",
+   "name": "Use of Known Domain Credentials",
+   "description": "Using valid credentials.",
+   "attack_techniques": [
+    "T1078",
+    "T1078.002"
+   ]
+  },
+  {
+   "id": "CAPEC-640",
+   "name": "Inclusion of Code in Existing Process",
+   "description": "Process injection.",
+   "attack_techniques": [
+    "T1055"
+   ]
+  },
+  {
+   "id": "CAPEC-242",
+   "name": "Code Injection",
+   "description": "Injecting code.",
+   "attack_techniques": [
+    "T1055",
+    "T1059"
+   ]
+  },
+  {
+   "id": "CAPEC-233",
+   "name": "Privilege Escalation",
+   "description": "Gaining elevated privileges.",
+   "attack_techniques": [
+    "T1068",
+    "T1548"
+   ]
+  },
+  {
+   "id": "CAPEC-94",
+   "name": "Adversary in the Middle (AiTM)",
+   "description": "Interposing between parties.",
+   "attack_techniques": [
+    "T1557"
+   ]
+  },
+  {
+   "id": "CAPEC-141",
+   "name": "Cache Poisoning",
+   "description": "Poisoning caches such as ARP/DNS.",
+   "attack_techniques": [
+    "T1557.002"
+   ]
+  },
+  {
+   "id": "CAPEC-300",
+   "name": "Port Scanning",
+   "description": "Scanning ports.",
+   "attack_techniques": [
+    "T1046",
+    "T1595.001"
+   ]
+  },
+  {
+   "id": "CAPEC-169",
+   "name": "Footprinting",
+   "description": "Reconnaissance footprinting.",
+   "attack_techniques": [
+    "T1595",
+    "T1592",
+    "T1590"
+   ]
+  },
+  {
+   "id": "CAPEC-116",
+   "name": "Excavation",
+   "description": "Extracting information from system.",
+   "attack_techniques": [
+    "T1083",
+    "T1005",
+    "T1082"
+   ]
+  },
+  {
+   "id": "CAPEC-151",
+   "name": "Identity Spoofing",
+   "description": "Spoofing identities.",
+   "attack_techniques": [
+    "T1036",
+    "T1656"
+   ]
+  },
+  {
+   "id": "CAPEC-177",
+   "name": "Create files with the same name as files protected with a higher classification",
+   "description": "Masquerading file names.",
+   "attack_techniques": [
+    "T1036.005"
+   ]
+  },
+  {
+   "id": "CAPEC-17",
+   "name": "Using Malicious Files",
+   "description": "Malicious files for execution.",
+   "attack_techniques": [
+    "T1204.002"
+   ]
+  },
+  {
+   "id": "CAPEC-650",
+   "name": "Upload a Web Shell to a Web Server",
+   "description": "Web shell deployment.",
+   "attack_techniques": [
+    "T1505.003"
+   ]
+  },
+  {
+   "id": "CAPEC-549",
+   "name": "Local Execution of Code",
+   "description": "Executing code locally.",
+   "attack_techniques": [
+    "T1059"
+   ]
+  },
+  {
+   "id": "CAPEC-551",
+   "name": "Modify Existing Service",
+   "description": "Modifying services for persistence.",
+   "attack_techniques": [
+    "T1543.003",
+    "T1574.010"
+   ]
+  },
+  {
+   "id": "CAPEC-557",
+   "name": "Schedule Software To Run",
+   "description": "Scheduled task persistence.",
+   "attack_techniques": [
+    "T1053"
+   ]
+  },
+  {
+   "id": "CAPEC-478",
+   "name": "Modification of Windows Service Configuration",
+   "description": "Service config modification.",
+   "attack_techniques": [
+    "T1543.003",
+    "T1574.011"
+   ]
+  },
+  {
+   "id": "CAPEC-203",
+   "name": "Manipulate Registry Information",
+   "description": "Registry manipulation.",
+   "attack_techniques": [
+    "T1112",
+    "T1547.001"
+   ]
+  },
+  {
+   "id": "CAPEC-93",
+   "name": "Log Injection-Tampering-Forging",
+   "description": "Tampering with logs.",
+   "attack_techniques": [
+    "T1070",
+    "T1070.001"
+   ]
+  },
+  {
+   "id": "CAPEC-268",
+   "name": "Audit Log Manipulation",
+   "description": "Manipulating audit logs.",
+   "attack_techniques": [
+    "T1070.001",
+    "T1562.002"
+   ]
+  },
+  {
+   "id": "CAPEC-578",
+   "name": "Disable Security Software",
+   "description": "Disabling defences.",
+   "attack_techniques": [
+    "T1562.001"
+   ]
+  },
+  {
+   "id": "CAPEC-555",
+   "name": "Remote Services with Stolen Credentials",
+   "description": "Lateral movement via remote services.",
+   "attack_techniques": [
+    "T1021",
+    "T1021.001",
+    "T1021.002"
+   ]
+  },
+  {
+   "id": "CAPEC-561",
+   "name": "Windows Admin Shares with Stolen Credentials",
+   "description": "Admin share abuse.",
+   "attack_techniques": [
+    "T1021.002"
+   ]
+  },
+  {
+   "id": "CAPEC-568",
+   "name": "Capture Credentials via Keylogger",
+   "description": "Keylogging.",
+   "attack_techniques": [
+    "T1056.001"
+   ]
+  },
+  {
+   "id": "CAPEC-37",
+   "name": "Retrieve Embedded Sensitive Data",
+   "description": "Credentials in files/configs.",
+   "attack_techniques": [
+    "T1552.001"
+   ]
+  },
+  {
+   "id": "CAPEC-158",
+   "name": "Sniffing Network Traffic",
+   "description": "Network sniffing.",
+   "attack_techniques": [
+    "T1040"
+   ]
+  },
+  {
+   "id": "CAPEC-114",
+   "name": "Authentication Abuse",
+   "description": "Abusing authentication mechanisms.",
+   "attack_techniques": [
+    "T1556",
+    "T1621"
+   ]
+  },
+  {
+   "id": "CAPEC-115",
+   "name": "Authentication Bypass",
+   "description": "Bypassing authentication.",
+   "attack_techniques": [
+    "T1556",
+    "T1550"
+   ]
+  },
+  {
+   "id": "CAPEC-653",
+   "name": "Use of Known Operating System Credentials",
+   "description": "OS credential reuse.",
+   "attack_techniques": [
+    "T1078.003"
+   ]
+  },
+  {
+   "id": "CAPEC-542",
+   "name": "Targeted Malware",
+   "description": "Targeted malware deployment.",
+   "attack_techniques": [
+    "T1587.001"
+   ]
+  },
+  {
+   "id": "CAPEC-437",
+   "name": "Supply Chain",
+   "description": "Supply chain manipulation.",
+   "attack_techniques": [
+    "T1195"
+   ]
+  },
+  {
+   "id": "CAPEC-586",
+   "name": "Object Injection",
+   "description": "Deserialisation attacks on public applications.",
+   "attack_techniques": [
+    "T1190"
+   ]
+  },
+  {
+   "id": "CAPEC-66",
+   "name": "SQL Injection",
+   "description": "SQL injection on public-facing applications.",
+   "attack_techniques": [
+    "T1190"
+   ]
+  },
+  {
+   "id": "CAPEC-188",
+   "name": "Reverse Engineering",
+   "description": "Analysing software to find vulnerabilities.",
+   "attack_techniques": [
+    "T1587"
+   ]
+  },
+  {
+   "id": "CAPEC-469",
+   "name": "HTTP DoS",
+   "description": "HTTP denial of service.",
+   "attack_techniques": [
+    "T1499"
+   ]
+  },
+  {
+   "id": "CAPEC-125",
+   "name": "Flooding",
+   "description": "Network flooding.",
+   "attack_techniques": [
+    "T1498"
+   ]
+  }
+ ]
+}

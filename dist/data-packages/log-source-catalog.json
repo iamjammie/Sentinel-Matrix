@@ -1,0 +1,239 @@
+{
+ "types": [
+  {
+   "id": "windows_security",
+   "name": "Windows Security Event Log",
+   "platform": "Windows",
+   "category": "endpoint"
+  },
+  {
+   "id": "windows_system",
+   "name": "Windows System Event Log",
+   "platform": "Windows",
+   "category": "endpoint"
+  },
+  {
+   "id": "windows_application",
+   "name": "Windows Application Event Log",
+   "platform": "Windows",
+   "category": "endpoint"
+  },
+  {
+   "id": "sysmon",
+   "name": "Windows Sysmon",
+   "platform": "Windows",
+   "category": "endpoint"
+  },
+  {
+   "id": "powershell",
+   "name": "Windows PowerShell Operational Log",
+   "platform": "Windows",
+   "category": "endpoint"
+  },
+  {
+   "id": "windows_taskscheduler",
+   "name": "Windows Task Scheduler Operational Log",
+   "platform": "Windows",
+   "category": "endpoint"
+  },
+  {
+   "id": "windows_wmi",
+   "name": "Windows WMI-Activity Log",
+   "platform": "Windows",
+   "category": "endpoint"
+  },
+  {
+   "id": "amsi",
+   "name": "AMSI / Defender Script Scanning",
+   "platform": "Windows",
+   "category": "endpoint"
+  },
+  {
+   "id": "windows_defender",
+   "name": "Windows Defender Operational Log",
+   "platform": "Windows",
+   "category": "endpoint"
+  },
+  {
+   "id": "active_directory",
+   "name": "Active Directory / Domain Controller Security Log",
+   "platform": "Windows",
+   "category": "identity"
+  },
+  {
+   "id": "linux_auditd",
+   "name": "Linux auditd",
+   "platform": "Linux",
+   "category": "endpoint"
+  },
+  {
+   "id": "linux_syslog",
+   "name": "Linux syslog / journald",
+   "platform": "Linux",
+   "category": "endpoint"
+  },
+  {
+   "id": "bash_history",
+   "name": "Shell command history forwarding",
+   "platform": "Linux",
+   "category": "endpoint"
+  },
+  {
+   "id": "dns",
+   "name": "DNS Server / Resolver Logs",
+   "platform": "Network",
+   "category": "network"
+  },
+  {
+   "id": "dhcp",
+   "name": "DHCP Server Logs",
+   "platform": "Network",
+   "category": "network"
+  },
+  {
+   "id": "proxy",
+   "name": "Web Proxy / Secure Web Gateway",
+   "platform": "Network",
+   "category": "network"
+  },
+  {
+   "id": "firewall",
+   "name": "Firewall",
+   "platform": "Network",
+   "category": "network"
+  },
+  {
+   "id": "vpn",
+   "name": "VPN / Remote Access Gateway",
+   "platform": "Network",
+   "category": "network"
+  },
+  {
+   "id": "ids_ips",
+   "name": "IDS / IPS",
+   "platform": "Network",
+   "category": "network"
+  },
+  {
+   "id": "edr",
+   "name": "Endpoint Detection & Response",
+   "platform": "Any",
+   "category": "endpoint"
+  },
+  {
+   "id": "ndr",
+   "name": "Network Detection & Response",
+   "platform": "Network",
+   "category": "network"
+  },
+  {
+   "id": "zeek",
+   "name": "Zeek / Network Sensor",
+   "platform": "Network",
+   "category": "network"
+  },
+  {
+   "id": "netflow",
+   "name": "NetFlow / IPFIX",
+   "platform": "Network",
+   "category": "network"
+  },
+  {
+   "id": "web_server",
+   "name": "Web Server Access/Error Logs",
+   "platform": "Any",
+   "category": "application"
+  },
+  {
+   "id": "database",
+   "name": "Database Audit Logs",
+   "platform": "Any",
+   "category": "application"
+  },
+  {
+   "id": "application",
+   "name": "Application Logs",
+   "platform": "Any",
+   "category": "application"
+  },
+  {
+   "id": "cloud_audit",
+   "name": "Cloud Audit Logs (CloudTrail / Azure Activity / GCP Audit)",
+   "platform": "Cloud",
+   "category": "cloud"
+  },
+  {
+   "id": "identity",
+   "name": "Identity Platform (Entra ID / Okta / ISE / ADFS)",
+   "platform": "Identity Provider",
+   "category": "identity"
+  },
+  {
+   "id": "pam",
+   "name": "Privileged Access Management",
+   "platform": "Any",
+   "category": "identity"
+  },
+  {
+   "id": "pki",
+   "name": "PKI / AD Certificate Services",
+   "platform": "Windows",
+   "category": "identity"
+  },
+  {
+   "id": "email_security",
+   "name": "Email Security Gateway",
+   "platform": "Any",
+   "category": "email"
+  },
+  {
+   "id": "container_runtime",
+   "name": "Container Runtime Logs",
+   "platform": "Containers",
+   "category": "cloud"
+  },
+  {
+   "id": "kubernetes_audit",
+   "name": "Kubernetes Audit Logs",
+   "platform": "Containers",
+   "category": "cloud"
+  },
+  {
+   "id": "network_device",
+   "name": "Network Device (Cisco IOS/NX-OS/ACI) Syslog",
+   "platform": "Network",
+   "category": "network"
+  },
+  {
+   "id": "snmp",
+   "name": "SNMP Traps",
+   "platform": "Network",
+   "category": "network"
+  },
+  {
+   "id": "threat_intel",
+   "name": "Threat Intelligence Feeds",
+   "platform": "Any",
+   "category": "intel"
+  },
+  {
+   "id": "siem_internal",
+   "name": "SIEM Internal / Collector Health",
+   "platform": "Any",
+   "category": "siem"
+  }
+ ],
+ "zones": [
+  "Internet Zone",
+  "DMZ",
+  "User LAN",
+  "Server LAN",
+  "Data Centre",
+  "Management Network",
+  "Domain Controller Zone",
+  "Critical Infrastructure Zone",
+  "Cloud Zone",
+  "OT Zone",
+  "Restricted Zone"
+ ]
+}
