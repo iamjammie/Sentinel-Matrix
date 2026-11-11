@@ -13,11 +13,13 @@ detections — all without an internet connection.
 It is **not** a static dashboard. Every button, filter, import, export, chart and assessment is
 functional and runs locally in your browser against your real imported data.
 
-Part of the offline, ATT&CK-mapped security tooling family alongside
-[FluxHunt](https://github.com/iamjammie/FluxHunt) (PCAP hunting),
-[HostHunt](https://github.com/iamjammie/HostHunt) (host triage),
-[TTP-Nexus](https://github.com/iamjammie/TTP-Nexus) (TTP knowledge) and
-[hunt-sage](https://github.com/iamjammie/hunt-sage) (hunt knowledge hub).
+<!-- suite-nav:start -->
+> **Part of the [iamjammie Hunt suite](https://iamjammie.github.io/FluxHunt/suite.html)** — open-source, offline-first security tooling and knowledge.
+>
+> 🧠 [Hunt-Sage](https://github.com/iamjammie/hunt-sage) (knowledge) · 🌊 [FluxHunt](https://github.com/iamjammie/FluxHunt) (wire) · 🖥️ [HostHunt](https://github.com/iamjammie/HostHunt) (box) · 📡 [HostVigil](https://github.com/iamjammie/HostVigil) (fleet) · 🔐 [ADHuntX](https://github.com/iamjammie/ADHuntX) (directory) · 🎯 **Sentinel Matrix** (detection coverage) · 🧬 [TTP NEXUS](https://github.com/iamjammie/TTP-Nexus) (frameworks) · 🛡️ [ThreatIntFlux](https://github.com/iamjammie/ThreatIntFlux) (threat intel) · 🔦 [Photonwire](https://github.com/iamjammie/PhotonWire) (air gap) · 🛰️ [SPECTRA](https://github.com/iamjammie/SPECTRA---Space-Cyber-Framework) (space)
+>
+> [Suite hub](https://iamjammie.github.io/FluxHunt/suite.html) · [All projects](https://github.com/iamjammie)
+<!-- suite-nav:end -->
 
 ---
 
