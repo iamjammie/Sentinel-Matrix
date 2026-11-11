@@ -21,7 +21,6 @@ Usage:
   pip install -r requirements.txt
   python sentinel_matrix_agent.py --host 127.0.0.1 --port 8787
 """
-from __future__ import annotations
 import os, sys, time, json, logging, argparse, ipaddress
 from typing import Any, Optional
 from contextlib import asynccontextmanager

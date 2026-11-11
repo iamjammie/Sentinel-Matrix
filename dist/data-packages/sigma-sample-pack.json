@@ -3,7 +3,6 @@
  "dataset_kind": "bundled-sample",
  "version": "sample-1.0",
  "note": "Representative sample only; not the complete Sigma repository. Import the full repository separately.",
- "generated_at": "2026-11-09T14:20:14.359922+00:00",
  "rules": [
   {
    "id": "a1b2c3d4-0001-4000-8000-000000000001",

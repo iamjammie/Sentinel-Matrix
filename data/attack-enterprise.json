@@ -3,7 +3,6 @@
  "dataset_kind": "bundled-compact",
  "note": "Compact dataset authored for offline use. Technique IDs, names, tactic and platform assignments follow ATT&CK Enterprise; descriptions are abbreviated. Import the official MITRE STIX 2.1 bundle (enterprise-attack.json) via Framework Database \u2192 Import to load full descriptions and the complete technique list.",
  "version": "compact-15.1",
- "generated_at": "2026-11-09T14:20:14.279313+00:00",
  "tactics": [
   {
    "id": "TA0043",

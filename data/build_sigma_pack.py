@@ -18,6 +18,6 @@ rules = [
  {"id":"a1b2c3d4-0011-4000-8000-000000000011","title":"AS-REP Roasting - No PreAuth TGT","techniques":["T1558.004"],"level":"high","logsource":{"product":"windows","service":"security"},"detection":"selection:\n  EventID: 4768\n  PreAuthType: '0'\ncondition: selection"},
  {"id":"a1b2c3d4-0012-4000-8000-000000000012","title":"Web Shell File Written to Web Root","techniques":["T1505.003"],"level":"high","logsource":{"product":"windows","category":"file_event"},"detection":"selection:\n  TargetFilename|contains: '\\\\wwwroot\\\\'\n  TargetFilename|endswith: '.aspx'\ncondition: selection"},
 ]
-out={"framework":"Sigma (bundled sample pack)","dataset_kind":"bundled-sample","version":"sample-1.0","note":"Representative sample only; not the complete Sigma repository. Import the full repository separately.","generated_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),"rules":rules}
+out={"framework":"Sigma (bundled sample pack)","dataset_kind":"bundled-sample","version":"sample-1.0","note":"Representative sample only; not the complete Sigma repository. Import the full repository separately.","rules":rules}
 with open(os.path.join(HERE,"sigma-sample-pack.json"),"w") as f: json.dump(out,f,indent=1)
 print("sigma sample rules:",len(rules))

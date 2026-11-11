@@ -2,7 +2,6 @@
  "framework": "SENTINEL MATRIX Detection Scenario Library",
  "dataset_kind": "bundled",
  "version": "1.0.0",
- "generated_at": "2026-11-09T14:20:14.333521+00:00",
  "kb": {
   "T1558.003": {
    "name": "Kerberoasting",

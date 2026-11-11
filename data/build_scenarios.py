@@ -401,7 +401,6 @@ KB["T1490"] = {"name":"Inhibit System Recovery","scenarios":[
 
 def main():
     out = {"framework":"SENTINEL MATRIX Detection Scenario Library","dataset_kind":"bundled","version":"1.0.0",
-           "generated_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),
            "kb":KB,
            "stats":{"techniques":len(KB),"scenarios":sum(len(v["scenarios"]) for v in KB.values())}}
     with open(os.path.join(HERE,"detection-scenario-templates.json"),"w") as f: json.dump(out,f,indent=1)

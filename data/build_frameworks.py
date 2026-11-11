@@ -656,7 +656,6 @@ def build_attack():
       "dataset_kind":"bundled-compact",
       "note":"Compact dataset authored for offline use. Technique IDs, names, tactic and platform assignments follow ATT&CK Enterprise; descriptions are abbreviated. Import the official MITRE STIX 2.1 bundle (enterprise-attack.json) via Framework Database → Import to load full descriptions and the complete technique list.",
       "version":"compact-15.1",
-      "generated_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),
       "tactics":tactics,"techniques":techniques,"data_components":dcs,
       "platforms":sorted(set(PLAT.values())),
       "stats":{"tactics":len(tactics),"techniques":sum(1 for t in techniques if not t["is_subtechnique"]),"subtechniques":sum(1 for t in techniques if t["is_subtechnique"])}

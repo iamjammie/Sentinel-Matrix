@@ -33,7 +33,12 @@ function build() {
   for (const f of JS_ORDER) { const src = fs.readFileSync(path.join(SRC, 'js', f), 'utf8'); try { new vm.Script(src, { filename: f }); } catch (e) { throw new Error('Syntax error in ' + f + ': ' + e.message); } }
   const css = fs.readFileSync(path.join(SRC, 'css', 'app.css'), 'utf8');
   let js = JS_ORDER.map(f => '/* ===== ' + f + ' ===== */\n' + fs.readFileSync(path.join(SRC, 'js', f), 'utf8')).join('\n');
-  const buildDate = new Date().toISOString().slice(0, 10);
+  // Deterministic build identifier (reproducible: a rebuild from the same source is byte-identical,
+  // which the CI build-freshness gate relies on). Override with SOURCE_DATE_EPOCH if a date is wanted.
+  const pkgVersion = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).version;
+  const buildDate = process.env.SOURCE_DATE_EPOCH
+    ? new Date(Number(process.env.SOURCE_DATE_EPOCH) * 1000).toISOString().slice(0, 10)
+    : 'v' + pkgVersion;
   js = js.replace('__BUILD_DATE__', buildDate);
   let html = fs.readFileSync(path.join(SRC, 'index.template.html'), 'utf8');
   html = html.replace('/*__CSS__*/', () => css);
